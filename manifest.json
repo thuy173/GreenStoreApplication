@@ -1,0 +1,8 @@
+{
+    "name": "@skymath/visssoft",
+    "version": "1.8.0",
+    "description": "Description of your application",
+    "start_url": "/",
+    "display": "standalone"
+  }
+  
