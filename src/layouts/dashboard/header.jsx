@@ -34,7 +34,8 @@ export default function Header({ openNav, onCloseNav, onOpenNav }) {
     if (openNav) {
       onCloseNav();
     }
-  }, [pathname, openNav, onCloseNav]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   const renderMenu = (
     <Stack direction="row" component="nav" spacing={0.5} sx={{ px: 2, position: 'relative' }}>
@@ -125,18 +126,12 @@ Header.propTypes = {
 };
 function NavItem({ item }) {
   const pathname = usePathname();
-  // const active = item.path === pathname;
 
   const [openMenu, setOpenMenu] = useState(false);
   const handleClick = () => setOpenMenu(!openMenu);
-  // const handleMouseEnter = () => setOpenMenu(true);
-  // const handleMouseLeave = () => setOpenMenu(false);
+
   return (
-    <Box
-    // onMouseEnter={item.children ? handleMouseEnter : undefined}
-    // onMouseLeave={item.children ? handleMouseLeave : undefined}
-    // sx={{ position: 'relative' }}
-    >
+    <Box>
       <ListItemButton
         onClick={item.children ? handleClick : undefined}
         component={RouterLink}
@@ -148,20 +143,8 @@ function NavItem({ item }) {
           color: '#F47C7C',
           textTransform: 'capitalize',
           fontWeight: 'fontWeightMedium',
-          // ...(active && {
-          //   color: '#F47C7C',
-          //   fontWeight: 'fontWeightSemiBold',
-          //   bgcolor: '#FFE3E1',
-          //   '&:hover': {
-          //     bgcolor: '#FAD4D4',
-          //   },
-          // }),
         }}
       >
-        {/* <Box component="span" sx={{ width: 20, height: 20, mr: 2 }}>
-          {item.icon}
-        </Box> */}
-
         <Box component="span">{item.title}</Box>
 
         {item.children && (

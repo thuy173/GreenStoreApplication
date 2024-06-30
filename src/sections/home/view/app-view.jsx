@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { Stack } from '@mui/material';
 
@@ -13,21 +13,21 @@ import ListMenu from '../list';
 
 export default function AppView() {
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
-  const showAlert = (severity, message) => {
-    setAlert({ severity, message, isOpen: true });
-  };
+  // const showAlert = (severity, message) => {
+  //   setAlert({ severity, message, isOpen: true });
+  // };
 
   const handleCloseAlert = () => {
     setAlert({ message: null, severity: 'success', isOpen: false });
   };
 
-  useEffect(() => {
-    const login = localStorage.getItem('accessToken') !== null;
+  // useEffect(() => {
+  //   const login = localStorage.getItem('accessToken') !== null;
 
-    if (login) {
-      showAlert('success', 'Login successful!');
-    }
-  }, []);
+  //   if (login) {
+  //     showAlert('success', 'Login successful!');
+  //   }
+  // }, []);
   
   return (
     <Stack sx={{ marginBottom: -10 }}>
