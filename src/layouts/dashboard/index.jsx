@@ -14,7 +14,11 @@ export default function DashboardLayout({ children }) {
 
   return (
     <>
-
+      <Header
+        openNav={openNav}
+        onCloseNav={() => setOpenNav(false)}
+        onOpenNav={() => setOpenNav(true)}
+      />
       <Box
         sx={{
           minHeight: 1,
@@ -22,8 +26,6 @@ export default function DashboardLayout({ children }) {
           flexDirection: { xs: 'column', lg: 'row' },
         }}
       >
-        <Header openNav={openNav} onCloseNav={() => setOpenNav(false)} onOpenNav={() => setOpenNav(true)} />
-
         <Main>{children}</Main>
       </Box>
       <Footer />

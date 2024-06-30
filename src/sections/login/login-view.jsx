@@ -42,7 +42,7 @@ const LoginView = () => {
     return <Navigate to="/" />;
   }
 
-  const clientId = "73919715033-8vil57eo7p9sd56ljlfl9o4gbdpvoebo.apps.googleusercontent.com";
+  const clientId = '73919715033-8vil57eo7p9sd56ljlfl9o4gbdpvoebo.apps.googleusercontent.com';
 
   const handleGoogleLoginSuccess = (response) => {
     console.log(response);
@@ -117,13 +117,15 @@ const LoginView = () => {
         Login
       </Button>
       <Divider>or</Divider>
-      <GoogleOAuthProvider clientId={clientId}>
-        <GoogleLogin
-          clientId={clientId}
-          onSuccess={handleGoogleLoginSuccess}
-          onFailure={handleGoogleLoginFailure}
-        />
-      </GoogleOAuthProvider>
+      <Stack justifyContent="center" alignItems="center">
+        <GoogleOAuthProvider clientId={clientId}>
+          <GoogleLogin
+            clientId={clientId}
+            onSuccess={handleGoogleLoginSuccess}
+            onFailure={handleGoogleLoginFailure}
+          />
+        </GoogleOAuthProvider>
+      </Stack>
     </>
   );
 
@@ -151,7 +153,7 @@ const LoginView = () => {
             p: 5,
             width: 1,
             maxWidth: 420,
-            gap: 3,
+            gap: 2.5,
             display: 'flex',
             flexDirection: 'column',
             alignSelf: 'flex-end',

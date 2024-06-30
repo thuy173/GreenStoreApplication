@@ -51,15 +51,17 @@ export default function Header({ openNav, onCloseNav, onOpenNav }) {
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
       )}
-      {lgUp && <Box sx={{ flexGrow: 1 }}>{renderMenu}</Box>}
+      {lgUp && (
+        <>
+          <Box sx={{ flexGrow: 1 }}>{renderMenu}</Box>
+          <Box sx={{ flexGrow: 1 }} />
+          <Logo sx={{ mr: { xs: 2, sm: 5, md: 10, lg: 28 } }} />
+        </>
+      )}
 
       <Box sx={{ flexGrow: 1 }} />
 
-      <Logo sx={{ mr: 28 }} />
-
-      <Box sx={{ flexGrow: 1 }} />
-
-      <Stack direction="row" alignItems="center" spacing={2}>
+      <Stack direction="row" alignItems="center" spacing={{ xs: 1, sm: 2 }}>
         <Cart />
         <AccountPopover />
       </Stack>

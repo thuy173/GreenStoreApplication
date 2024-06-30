@@ -7,15 +7,14 @@ import { Box, Stack, Typography } from '@mui/material';
 const ImageContainer = styled(Box)({
   position: 'relative',
   width: '100%',
-  maxWidth: '600px',
+  maxWidth: '100%',
   margin: '0 auto',
 });
 
 const LargeImage = styled('img')({
-  width: '280px',
+  width: '100%',
   height: 'auto',
   objectFit: 'cover',
-  left: '70px',
   display: 'block',
   boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
   border: '5px solid #fff',
@@ -24,8 +23,8 @@ const LargeImage = styled('img')({
 const SmallImage = styled('img')({
   position: 'absolute',
   bottom: '-110px',
-  right: '220px',
-  width: '170px',
+  right: '5%',
+  width: '30%',
   height: 'auto',
   objectFit: 'cover',
   boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
