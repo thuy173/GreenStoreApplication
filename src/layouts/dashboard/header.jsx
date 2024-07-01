@@ -142,7 +142,7 @@ function NavItem({ item }) {
           minHeight: 35,
           borderRadius: 0.75,
           typography: 'body1',
-          color: '#F47C7C',
+          color: '#3b413a',
           textTransform: 'capitalize',
           fontWeight: 'fontWeightMedium',
         }}
@@ -177,15 +177,15 @@ function NavItem({ item }) {
                   minHeight: 30,
                   borderRadius: 0.75,
                   typography: 'body2',
-                  color: '#F47C7C',
+                  color: '#3b413a',
                   textTransform: 'capitalize',
                   fontWeight: 'fontWeightMedium',
                   ...(child.path === pathname && {
-                    color: '#F47C7C',
+                    color: '#3b413a',
                     fontWeight: 'fontWeightSemiBold',
                     bgcolor: '#faf5f6',
                     '&:hover': {
-                      bgcolor: '#FAD4D4',
+                      bgcolor: '#f5fcf4',
                     },
                   }),
                 }}

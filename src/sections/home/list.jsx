@@ -25,7 +25,7 @@ export default function ListMenu() {
             <CardMedia
               component="img"
               height="250"
-              image="../../../public/assets/images/product/flower43.jpg"
+              image="https://res.cloudinary.com/dmmk9racr/image/upload/v1719571724/tqimeih4m8xlimm6ap0w.png"
               alt="Paella dish"
               sx={{ objectFit: 'fit' }}
             />

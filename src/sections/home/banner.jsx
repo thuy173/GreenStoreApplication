@@ -22,9 +22,9 @@ export default function Banner() {
       <Slider {...settings}>
         <Box position="relative">
           <img
-            src="../../../public/assets/images/main/banner2.jpg"
+            src="../../../public/assets/images/main/h1slide2.webp"
             alt=""
-            style={{ width: '50%', height: 'auto', objectFit: 'cover', marginLeft: '8%' }}
+            style={{ width: '100%', height: 'auto', objectFit: 'cover', marginLeft: '8%' }}
           />
           <Typography
             variant="h1"
@@ -34,7 +34,7 @@ export default function Banner() {
               top: '40%',
               left: '66%',
               transform: 'translate(-50%, -50%)',
-              color: '#f47c7c',
+              color: '#3b413a',
               padding: '8px',
               borderRadius: '8px',
             }}
@@ -44,9 +44,9 @@ export default function Banner() {
         </Box>
         <Box position="relative">
           <img
-            src="../../../public/assets/images/main/banner2.jpg"
+            src="../../../public/assets/images/main/h1slide2.webp"
             alt=""
-            style={{ width: '50%', height: 'auto', objectFit: 'cover', marginLeft: '8%' }}
+            style={{ width: '100%', height: 'auto', objectFit: 'cover', marginLeft: '8%' }}
           />
           <Typography
             variant="h1"
@@ -56,7 +56,7 @@ export default function Banner() {
               top: '40%',
               left: '66%',
               transform: 'translate(-50%, -50%)',
-              color: '#f47c7c',
+              color: '#3b413a',
               padding: '8px',
               borderRadius: '8px',
             }}
@@ -66,9 +66,9 @@ export default function Banner() {
         </Box>
         <Box position="relative">
           <img
-            src="../../../public/assets/images/main/banner2.jpg"
+            src="../../../public/assets/images/main/h1slide2.webp"
             alt=""
-            style={{ width: '50%', height: 'auto', objectFit: 'cover', marginLeft: '8%' }}
+            style={{ width: '100%', height: 'auto', objectFit: 'cover', marginLeft: '8%' }}
           />
           <Typography
             variant="h1"
@@ -78,7 +78,7 @@ export default function Banner() {
               top: '40%',
               left: '66%',
               transform: 'translate(-50%, -50%)',
-              color: '#f47c7c',
+              color: '#3b413a',
               padding: '8px',
               borderRadius: '8px',
             }}

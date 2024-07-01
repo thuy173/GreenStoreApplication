@@ -56,7 +56,7 @@ export default function News() {
         <Card sx={{ maxWidth: 345 }}>
           <CardHeader
             avatar={
-              <Avatar sx={{ bgcolor: '#f47c7c' }} aria-label="recipe">
+              <Avatar sx={{ bgcolor: '#3b413a' }} aria-label="recipe">
                 T
               </Avatar>
             }
@@ -70,7 +70,7 @@ export default function News() {
           <CardMedia
             component="img"
             height="194"
-            image="../../../public/assets/images/product/note.jpg"
+            image="https://res.cloudinary.com/dmmk9racr/image/upload/v1718979098/b3hol4bzxmpktentzbkg.png"
             alt="Paella dish"
           />
           <CardContent>

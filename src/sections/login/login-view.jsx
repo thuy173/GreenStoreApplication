@@ -133,7 +133,7 @@ const LoginView = () => {
       sx={{
         height: 1,
         backgroundImage:
-          'url(https://res.cloudinary.com/dmmk9racr/image/upload/v1719675397/h1slide2_qwcrro.webp)',
+          'url(https://res.cloudinary.com/dmmk9racr/image/upload/v1719845050/Untitled_design-pdf_apgxrz.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}

@@ -27,7 +27,7 @@ export default function Main({ children, sx, ...other }) {
           width: `calc(100% - ${NAV.WIDTH}px)`,
         }),
         ...sx,
-        backgroundColor: '#ffe3e1',
+        backgroundColor: '#f5fcf4',
       }}
       {...other}
     >

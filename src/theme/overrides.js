@@ -60,11 +60,11 @@ export function overrides(theme) {
     MuiButton: {
       styleOverrides: {
         containedInherit: {
-          color: '#F47C7C',
-          backgroundColor: '#FAD4D4',
+          color: '#fff',
+          backgroundColor: '#26643b',
           '&:hover': {
-            color: '#F47C7C',
-            backgroundColor: '#FAD4D4',
+            color: '#fff',
+            backgroundColor: '#26643b',
           },
         },
         sizeLarge: {
@@ -110,18 +110,18 @@ export function overrides(theme) {
     MuiTableCell: {
       styleOverrides: {
         head: {
-          color: '#F47C7C',
-          backgroundColor: '#FAD4D4',
+          color: '#3b413a',
+          backgroundColor: '#f5fcf4',
         },
       },
     },
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          backgroundColor: '#FAD4D4',
+          backgroundColor: '#f5fcf4',
         },
         arrow: {
-          color: '#F47C7C',
+          color: '#3b413a',
         },
       },
     },
