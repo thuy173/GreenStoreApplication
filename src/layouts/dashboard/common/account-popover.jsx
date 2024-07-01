@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -14,6 +14,8 @@ import IconButton from '@mui/material/IconButton';
 import { account } from 'src/_mock/account';
 import { logOut } from 'src/redux/actions/authActions';
 import { clearLocalStorage } from 'src/services/agent';
+import { SET_MESSAGE } from 'src/redux/actions/actionTypes';
+import { selectIsLoggedIn } from 'src/redux/selectors/authSelector';
 
 // ----------------------------------------------------------------------
 
@@ -29,10 +31,15 @@ const MENU_OPTIONS = [
 ];
 
 // ----------------------------------------------------------------------
+export const setMessage = (message, severity = 'success') => ({
+  type: SET_MESSAGE,
+  payload: { message, severity },
+});
 
 export default function AccountPopover() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isLoggedIn = useSelector(selectIsLoggedIn); 
 
   const [open, setOpen] = useState(null);
 
@@ -45,17 +52,30 @@ export default function AccountPopover() {
   };
 
   const handleLogout = () => {
-    clearLocalStorage();
-    dispatch(logOut(navigate));
+    try {
+      clearLocalStorage();
+      dispatch(logOut(navigate));
+      dispatch(setMessage('Logged out successfully!', 'success'));
+      navigate('/');
+    } catch (error) {
+      const message =
+        (error.response && error.response.data && error.response.data.message) ||
+        error.message ||
+        error.toString();
+      dispatch(setMessage(message, 'error'));
+    }
   };
+
   const handleLogin = () => {
     handleClose();
     navigate('/login');
   };
+
   const handleRegister = () => {
     handleClose();
     navigate('/register');
   };
+
   const handleProfileClick = () => {
     handleClose();
     navigate('/profile');
@@ -122,30 +142,35 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed', m: 0 }} />
 
-        <MenuItem
-          disableRipple
-          disableTouchRipple
-          onClick={handleLogin}
-          sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
-        >
-          Login
-        </MenuItem>
-        <MenuItem
-          disableRipple
-          disableTouchRipple
-          onClick={handleRegister}
-          sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
-        >
-          Register
-        </MenuItem>
-        <MenuItem
-          disableRipple
-          disableTouchRipple
-          onClick={handleLogout}
-          sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
-        >
-          Logout
-        </MenuItem>
+        {isLoggedIn ? (
+          <MenuItem
+            disableRipple
+            disableTouchRipple
+            onClick={handleLogout}
+            sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
+          >
+            Logout
+          </MenuItem>
+        ) : (
+          <>
+            <MenuItem
+              disableRipple
+              disableTouchRipple
+              onClick={handleLogin}
+              sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
+            >
+              Login
+            </MenuItem>
+            <MenuItem
+              disableRipple
+              disableTouchRipple
+              onClick={handleRegister}
+              sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
+            >
+              Register
+            </MenuItem>
+          </>
+        )}
       </Popover>
     </>
   );
