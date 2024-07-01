@@ -99,8 +99,8 @@ export default function AccountPopover() {
           src={account.photoURL}
           alt={account.displayName}
           sx={{
-            width: 36,
-            height: 36,
+            width: 42,
+            height: 42,
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >

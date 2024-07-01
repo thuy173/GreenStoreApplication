@@ -1,6 +1,7 @@
 import React from 'react';
 
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import {
   Card,
@@ -13,6 +14,7 @@ import {
 } from '@mui/material';
 
 import Label from 'src/components/label';
+
 
 // ----------------------------------------------------------------------
 
@@ -48,6 +50,26 @@ export default function ListMenu() {
           </Card>
         </Grid>
       ))}
+      <Card style={{ maxWidth: 200 }}>
+            <CardMedia
+                component="img"
+                alt="Succulent Plant"
+                height="140"
+                image="https://example.com/succulent-plant.jpg"
+                title="Succulent Plant"
+            />
+            <CardContent>
+                <Typography variant="h6" component="div">
+                    Succulent Plant
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    $5.99
+                </Typography>
+                <IconButton aria-label="add to cart" style={{ padding: 0 }}>
+                    <ShoppingCartIcon />
+                </IconButton>
+            </CardContent>
+        </Card>
     </Grid>
   );
 }

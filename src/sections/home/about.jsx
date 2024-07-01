@@ -1,53 +1,59 @@
 import React from 'react';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { styled } from '@mui/system';
-import { Box, Stack, Typography } from '@mui/material';
-
-const ImageContainer = styled(Box)({
-  position: 'relative',
-  width: '100%',
-  maxWidth: '100%',
-  margin: '0 auto',
-});
-
-const LargeImage = styled('img')({
-  width: '50%',
-  height: 'auto',
-  objectFit: 'cover',
-  display: 'block',
-  boxShadow: '0px 4px 8px rgb(214, 229, 217)',
-  border: '3px solid #a2de96',
-  marginLeft: 80,
-});
-
-const SmallImage = styled('img')({
-  position: 'absolute',
-  bottom: '-110px',
-  right: '25%',
-  width: '30%',
-  height: 'auto',
-  objectFit: 'cover',
-  boxShadow: '0px 4px 8px rgb(214, 229, 217)',
-  border: '3px solid #a2de96',
-});
+import ChefIcon from '@mui/icons-material/Kitchen';
+import ServiceIcon from '@mui/icons-material/RoomService';
+import TasteIcon from '@mui/icons-material/RestaurantMenu';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import { Box, Card, Grid, Container, Typography, CardContent } from '@mui/material';
 
 const OverlayImages = () => (
-  <Stack direction="row" alignItems="center" spacing={2} paddingTop={8}>
-    <Box flex={1}>
-      <Typography color="#3b413a" variant="h3" gutterBottom textAlign="center">
-        Come to our flower shop
+  <Container>
+    <Box sx={{ textAlign: 'center', mt: 5 }}>
+      <Typography variant="h4" gutterBottom>
+        Why Choose Our Food
       </Typography>
-      <Typography variant="body1" textAlign="center" sx={{ px: 10 }}>
-        It will be an interesting experience, refreshing your soul and enjoying a more beautiful
-        life.
+      <Typography variant="body1" paragraph>
+        Quality of Service, Food, Ambiance, and Value of Money are the primary elements for choosing
+        a restaurant. Shaifs Cuisine is one of the most exquisite fine-dining restaurants in
+        Chittagong cities with a captivating view of GEC Hills, perfect ambiance, and scrumptious
+        food.
       </Typography>
     </Box>
-    <ImageContainer>
-      <LargeImage src="https://res.cloudinary.com/dmmk9racr/image/upload/v1718962373/z6hspwrib2v1rbqkhatv.png" alt="Large Image" />
-      <SmallImage src="https://res.cloudinary.com/dmmk9racr/image/upload/v1718982327/agmuo34upymyuc4zev97.png" alt="Small Image" />
-    </ImageContainer>
-  </Stack>
+    <Grid container spacing={4} justifyContent="center" sx={{ mt: 4 }}>
+      <Grid item xs={12} sm={6} md={3}>
+        <Card sx={{ textAlign: 'center', p: 2 }}>
+          <CardContent>
+            <RestaurantIcon fontSize="large" />
+            <Typography variant="h6">Quality Food</Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12} sm={6} md={3}>
+        <Card sx={{ textAlign: 'center', p: 2 }}>
+          <CardContent>
+            <TasteIcon fontSize="large" />
+            <Typography variant="h6">Classical Taste</Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12} sm={6} md={3}>
+        <Card sx={{ textAlign: 'center', p: 2 }}>
+          <CardContent>
+            <ChefIcon fontSize="large" />
+            <Typography variant="h6">Skilled Chef</Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12} sm={6} md={3}>
+        <Card sx={{ textAlign: 'center', p: 2 }}>
+          <CardContent>
+            <ServiceIcon fontSize="large" />
+            <Typography variant="h6">Best Service</Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+    </Grid>
+  </Container>
 );
 
 export default OverlayImages;
