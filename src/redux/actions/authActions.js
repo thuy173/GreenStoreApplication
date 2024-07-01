@@ -35,9 +35,9 @@ export const logOut = (message) => ({
   payload: { message },
 });
 
-export const setMessage = (message) => ({
+export const setMessage = (message, severity = 'success') => ({
   type: SET_MESSAGE,
-  payload: { message },
+  payload: { message, severity },
 });
 
 export const login = (credentials, navigate) => async (dispatch) => {
@@ -50,10 +50,10 @@ export const login = (credentials, navigate) => async (dispatch) => {
       setLocalStorage('accessToken', accessToken);
 
       dispatch(loginSuccess(accessToken, 'Login successful!'));
-      dispatch(setMessage('Login successful!'));
+      dispatch(setMessage('Login successful!', 'success'));
       navigate('/');
     } else {
-      dispatch(setMessage('Login failed! Please try again.'));
+      dispatch(setMessage('Login failed! Please try again.', 'error'));
       navigate('/login');
     }
   } catch (error) {
@@ -62,7 +62,7 @@ export const login = (credentials, navigate) => async (dispatch) => {
       error.message ||
       error.toString();
     dispatch(loginFailure(error, message));
-    dispatch(setMessage(message));
+    dispatch(setMessage(message, 'error'));
   }
 };
 
@@ -76,14 +76,19 @@ export const googleLogin = (token, navigate) => async (dispatch) => {
       setLocalStorage('accessToken', accessToken);
 
       dispatch(loginSuccess(accessToken, 'Login successful!'));
-      dispatch(setMessage('Login successful!'));
+      dispatch(setMessage('Login successful!', 'success'));
       navigate('/');
     } else {
-      dispatch(setMessage('Login failed! Please try again.'));
+      dispatch(setMessage('Login failed! Please try again.', 'error'));
       navigate('/login');
     }
   } catch (error) {
-    console.error('Google login error:', error);
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    dispatch(loginFailure(error, message));
+    dispatch(setMessage(message, 'error'));
   }
 };
 
@@ -93,7 +98,7 @@ export const register = (userData, navigate) => async (dispatch) => {
 
     if (response.status === 201) {
       dispatch(registerSuccess('Registration successful!'));
-      dispatch(setMessage('Registration successful! Please login.'));
+      dispatch(setMessage('Registration successful! Please login.', 'success'));
       navigate('/login');
     }
   } catch (error) {
@@ -102,12 +107,20 @@ export const register = (userData, navigate) => async (dispatch) => {
       error.message ||
       error.toString();
     dispatch(registerFailure(error, message));
-    dispatch(setMessage(message));
+    dispatch(setMessage('Registration failed! Please try again.', 'error'));
   }
 };
 
-export const logout = (navigate) => (dispatch) => {
-  dispatch(logOut());
-  dispatch(setMessage('Logged out successfully!'));
-  navigate('/');
+export const logout = (navigate) => async (dispatch) => {
+  try {
+    await dispatch(logOut());
+    dispatch(setMessage('Logged out successfully!', 'success'));
+    navigate('/');
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    dispatch(setMessage(message, 'error'));
+  }
 };

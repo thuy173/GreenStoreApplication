@@ -1,32 +1,27 @@
-
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { Alert, Snackbar } from '@mui/material';
+import { CLEAR_MESSAGE } from 'src/redux/actions/actionTypes';
 
-import { clearMessage } from 'src/redux/actions/messageActions';
+import CustomSnackbar from './snackbar';
 
 
-const AlertNotification = () => {
-  const { message, open } = useSelector((state) => state.message);
+const SnackbarContainer = () => {
   const dispatch = useDispatch();
+  const { message, open, severity } = useSelector((state) => state.message);
 
   const handleClose = () => {
-    dispatch(clearMessage());
+    dispatch({ type: CLEAR_MESSAGE });
   };
 
   return (
-    <Snackbar
+    <CustomSnackbar
       open={open}
-      autoHideDuration={6000}
       onClose={handleClose}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-    >
-      <Alert onClose={handleClose} severity={message}>
-        {message.content}
-      </Alert>
-    </Snackbar>
+      message={message}
+      severity={severity}
+    />
   );
 };
 
-export default AlertNotification;
+export default SnackbarContainer;
