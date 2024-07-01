@@ -68,7 +68,7 @@ export const login = (credentials, navigate) => async (dispatch) => {
 
 export const googleLogin = (token, navigate) => async (dispatch) => {
   try {
-    const response = await LoginServices.LoginForGoogle(token);
+    const response = await LoginServices.LoginForGoogle({ googleToken: token });
 
     const accessToken = response.data;
 

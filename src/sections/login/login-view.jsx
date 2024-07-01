@@ -45,7 +45,6 @@ const LoginView = () => {
   const clientId = '73919715033-8vil57eo7p9sd56ljlfl9o4gbdpvoebo.apps.googleusercontent.com';
 
   const handleGoogleLoginSuccess = (response) => {
-    console.log(response);
     dispatch(googleLogin(response.credential, navigate));
   };
 
