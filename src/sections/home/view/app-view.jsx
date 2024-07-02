@@ -4,10 +4,11 @@ import { Stack } from '@mui/material';
 
 import CustomSnackbar from 'src/components/snackbar/snackbar';
 
-import News from '../news';
-import About from '../about';
 import Banner from '../banner';
 import ListMenu from '../list';
+import AboutHome from '../about';
+import ProductList from '../product';
+import CategoryHome from '../category';
 
 // ----------------------------------------------------------------------
 
@@ -18,7 +19,6 @@ export default function AppView() {
     setAlert({ message: null, severity: 'success', isOpen: false });
   };
 
-  
   return (
     <Stack sx={{ marginBottom: -10 }}>
       <CustomSnackbar
@@ -28,9 +28,10 @@ export default function AppView() {
         severity={alert.severity}
       />
       <Banner />
+      <CategoryHome />
       <ListMenu />
-      <About />
-      <News />
+      <AboutHome />
+      <ProductList/>
     </Stack>
   );
 }
