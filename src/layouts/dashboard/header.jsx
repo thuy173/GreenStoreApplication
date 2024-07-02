@@ -55,7 +55,7 @@ export default function Header({ openNav, onCloseNav, onOpenNav }) {
         <>
           <Box sx={{ flexGrow: 1 }}>{renderMenu}</Box>
           <Box sx={{ flexGrow: 1 }} />
-          <Logo sx={{ mr: { xs: 2, sm: 5, md: 10, lg: 28 } }} />
+          <Logo sx={{ mr: { xs: 2, sm: 5, md: 10, lg: 48 } }} />
         </>
       )}
 
