@@ -121,7 +121,7 @@ const ProductDetail = ({ initialValues }) => {
             <Box display="flex" alignItems="center" mb={1}>
               <Rating
                 name="rating"
-                value={4.3}
+                value={initialValues?.rating || 5}
                 precision={0.5}
                 readOnly
                 sx={{ fontSize: '20px' }}
@@ -261,12 +261,20 @@ ProductDetail.propTypes = {
     description: PropTypes.string,
     manufactureDate: PropTypes.any,
     expiryDate: PropTypes.any,
+    rating: PropTypes.number,
     unitOfMeasure: PropTypes.string,
     nutrients: PropTypes.arrayOf(PropTypes.any),
     productImages: PropTypes.arrayOf(
       PropTypes.shape({
         productImageId: PropTypes.number,
         imageUrl: PropTypes.string,
+      })
+    ),
+    ratingList: PropTypes.arrayOf(
+      PropTypes.shape({
+        ratingId: PropTypes.number,
+        ratingValue: PropTypes.any,
+        createAt: PropTypes.any,
       })
     ),
   }),
