@@ -9,6 +9,7 @@ export const Page404 = lazy(() => import('../pages/page-not-found'));
 export const DashboardLayout = lazy(() => import('../layouts/dashboard'));
 export const ProductPage = lazy(() => import('../pages/ProductPage/main'));
 export const ProductDetailPage = lazy(() => import('../pages/ProductPage/detail'));
+export const CartPage = lazy(() => import('../pages/CartPage/main'));
 
 
 // ----------------------------------------------------------------------
@@ -27,6 +28,7 @@ export default function Router() {
         { element: <HomePage />, index: true },
         { path: 'product', element: <ProductPage /> },
         { path: 'product/detail/:id', element: <ProductDetailPage /> },
+        { path: 'cart', element: <CartPage /> },
 
        
       ],
