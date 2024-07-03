@@ -47,13 +47,22 @@ export default function ProductList() {
               sx={{
                 position: 'absolute',
                 top: 0,
-                right: '-3.8%',
+                right: '21%',
                 backgroundColor: '#507c5c',
                 color: '#fff',
                 padding: '4px 12px',
                 borderRadius: '0 16px 0 16px',
                 fontWeight: 'bold',
                 zIndex: 1,
+                '@media (max-width: 1508px)': {
+                  right: '-3.8%',
+                },
+                '@media (max-width: 767px)': {
+                  right: '-31%',
+                },
+                '@media (max-width: 991px)': {
+                  right: '6%',
+                },
               }}
             >
               -10%
