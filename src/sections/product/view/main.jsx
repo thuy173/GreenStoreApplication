@@ -18,6 +18,7 @@ import {
 import CategoryServices from 'src/services/CategoryServices';
 
 import ProductList from '../list-view';
+import ProductListFilter from '../list-filter';
 // ----------------------------------------------------------------------
 
 function valueLabelFormat(value) {
@@ -44,7 +45,10 @@ function filterProducts(products, maxPrice) {
 export default function ProductMain() {
   const [value, setValue] = useState(10);
   const [categoryData, setCategoryData] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [productFilterData, setProductFilterData] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(
+    localStorage.getItem('selectedCategory') || 'all'
+  );
 
   const fetchProductData = async () => {
     try {
@@ -59,9 +63,30 @@ export default function ProductMain() {
     }
   };
 
+  const fetchProductFilterData = async (categoryId) => {
+    try {
+      const response = await CategoryServices.getDataById(categoryId);
+      if (response?.data && response?.status === 200) {
+        setProductFilterData(response.data.products);
+      } else {
+        console.error(response ?? 'Unexpected response structure');
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
   useEffect(() => {
     fetchProductData();
+    if (selectedCategory && selectedCategory !== 'all') {
+      fetchProductFilterData(selectedCategory);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('selectedCategory', selectedCategory);
+  }, [selectedCategory]);
 
   const handleChange = (event, newValue) => {
     if (typeof newValue === 'number') {
@@ -112,9 +137,12 @@ export default function ProductMain() {
     },
   });
 
-  const handleCategoryChange = (event) => {
-    setSelectedCategory(event.target.value);
+  const handleCategoryChange = async (event) => {
+    const categoryId = event.target.value;
+    setSelectedCategory(categoryId);
+    await fetchProductFilterData(categoryId);
   };
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={2.5}>
@@ -149,6 +177,12 @@ export default function ProductMain() {
           <Box my={3}>
             <Typography variant="h6">Category:</Typography>
             <RadioGroup value={selectedCategory} onChange={handleCategoryChange}>
+              <FormControlLabel
+                key="all"
+                value="all"
+                control={<Radio style={{ color: '#52af77' }} />}
+                label="All"
+              />
               {categoryData.map((category) => (
                 <FormControlLabel
                   key={category.categoryId}
@@ -187,7 +221,10 @@ export default function ProductMain() {
       </Grid>
       <Grid item xs={12} sm={9.5}>
         <Stack sx={{ padding: 2, height: '100%', overflowY: 'auto' }}>
-          <ProductList />
+          {(!selectedCategory || selectedCategory === 'all') && <ProductList />}
+          {selectedCategory && selectedCategory !== 'all' && productFilterData && (
+            <ProductListFilter productFilterData={productFilterData} />
+          )}
         </Stack>
       </Grid>
     </Grid>
