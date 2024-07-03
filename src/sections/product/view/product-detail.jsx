@@ -1,6 +1,6 @@
-import React from 'react';
 import Slider from 'react-slick';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -10,9 +10,11 @@ import {
   Box,
   Grid,
   Card,
+  Chip,
   Stack,
   Rating,
   Button,
+  Divider,
   CardMedia,
   Typography,
   ButtonGroup,
@@ -26,12 +28,12 @@ function SampleNextArrow(props) {
       className={className}
       style={{
         ...style,
-        display: 'block',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         background: 'red',
-        width: '24px',
-        height: '24px',
-        color: 'white',
-        fontSize: '24px',
+        width: '28px',
+        height: '28px',
         borderRadius: '50%',
       }}
       onClick={onClick}
@@ -68,6 +70,9 @@ function SamplePrevArrow(props) {
 }
 
 const ProductDetail = ({ initialValues }) => {
+  const [selectedImage, setSelectedImage] = useState(initialValues.productImages[0].imageUrl);
+  const [quantity, setQuantity] = useState(1);
+
   const {
     productName,
     price,
@@ -80,6 +85,18 @@ const ProductDetail = ({ initialValues }) => {
 
   const convertedProductName = productName.replace(/\b\w/g, (char) => char.toUpperCase());
   const convertedDes = description.charAt(0).toUpperCase() + description.slice(1);
+
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+  };
+
+  const handleIncrement = () => {
+    setQuantity((prevQuantity) => prevQuantity + 1);
+  };
+
+  const handleDecrement = () => {
+    setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
+  };
 
   const settings = {
     centerMode: true,
@@ -95,7 +112,7 @@ const ProductDetail = ({ initialValues }) => {
 
   return (
     <Stack direction="column" alignItems="center" justifyContent="space-between" mb={5}>
-      <Grid item container spacing={2} mt={15}>
+      <Grid item container spacing={2} mt={6}>
         <Grid item xs={6} md={5} ml={12}>
           <Typography variant="h1" gutterBottom>
             {convertedProductName}
@@ -110,8 +127,9 @@ const ProductDetail = ({ initialValues }) => {
                 sx={{ fontSize: '20px' }}
               />
             </Box>
-            <Typography variant="h5" gutterBottom>
-              ${price}
+            <Typography variant="h4" gutterBottom>
+              ${price}{' '}
+              <small style={{ fontSize: 14, fontWeight: 'normal' }}>per {unitOfMeasure}</small>
             </Typography>
           </Stack>
           <Typography mt={4} mb={3} variant="body1" gutterBottom>
@@ -134,6 +152,7 @@ const ProductDetail = ({ initialValues }) => {
               }}
             >
               <Button
+                onClick={handleDecrement}
                 sx={{
                   backgroundColor: '#fff',
                   color: '#000',
@@ -155,9 +174,10 @@ const ProductDetail = ({ initialValues }) => {
                   },
                 }}
               >
-                1
+                {quantity}
               </Button>
               <Button
+                onClick={handleIncrement}
                 sx={{
                   backgroundColor: '#fff',
                   color: '#000',
@@ -190,7 +210,7 @@ const ProductDetail = ({ initialValues }) => {
           <Stack mt={5} ml={-2.5}>
             <Slider {...settings}>
               {initialValues.productImages.map((image, index) => (
-                <Box key={index} px={2}>
+                <Box key={index} px={2} onClick={() => handleImageClick(image.imageUrl)}>
                   <Card>
                     <Box sx={{ height: 140 }}>
                       <CardMedia component="img" sx={{ height: '100%' }} image={image.imageUrl} />
@@ -203,16 +223,32 @@ const ProductDetail = ({ initialValues }) => {
         </Grid>
         <Grid item xs={6} md={6}>
           <img
-            src="https://res.cloudinary.com/dmmk9racr/image/upload/v1719892494/cat-5_nz38j1.png"
+            src={selectedImage}
             alt=""
-            style={{ objectFit: 'cover', width: '60%' }}
+            style={{ objectFit: 'cover', width: '60%', marginBottom: '18%', marginLeft: '18%' }}
           />
         </Grid>
       </Grid>
-      <Typography variant="body1">Quantity in Stock: {quantityInStock}</Typography>
-      <Typography variant="body1">Manufacture Date: {manufactureDate}</Typography>
-      <Typography variant="body1">Expiry Date: {expiryDate}</Typography>
-      <Typography variant="body1">Unit of Measure: {unitOfMeasure}</Typography>
+      <Grid item xs={12} md={12} mt={5}>
+        <Divider sx={{ width: '100%', marginBottom: '4%' }}>
+          <Chip label="Description" size="small" />
+        </Divider>
+        <Grid item xs={12} md={12} px={50}>
+          <Typography variant="body1">Quantity in Stock: {quantityInStock}</Typography>
+          <Typography variant="body1">Manufacture Date: {manufactureDate}</Typography>
+          <Typography variant="body1">Expiry Date: {expiryDate}</Typography>
+        </Grid>
+      </Grid>
+      <Grid item xs={12} md={12} mt={5}>
+        <Divider sx={{ width: '100%', marginBottom: '4%' }}>
+          <Chip label="Review" size="small" />
+        </Divider>
+        <Grid item xs={12} md={12} px={50}>
+          <Typography variant="body1">Quantity in Stock: {quantityInStock}</Typography>
+          <Typography variant="body1">Manufacture Date: {manufactureDate}</Typography>
+          <Typography variant="body1">Expiry Date: {expiryDate}</Typography>
+        </Grid>
+      </Grid>
     </Stack>
   );
 };

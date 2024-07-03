@@ -113,13 +113,16 @@ export default function ProductList() {
                       ${items.price}
                     </Typography>
                     <Typography variant="caption" sx={{ padding: 0 }}>
-                      per kg
+                      per{' '}<span>{items.unitOfMeasure}</span>
                     </Typography>
                   </Stack>
 
                   <img
-                    src="https://res.cloudinary.com/dmmk9racr/image/upload/v1719891019/crispy_persimmon_uwdd3r.png"
-                    alt=""
+                    src={
+                      items.productImages[0]?.imageUrl ||
+                      'https://res.cloudinary.com/dmmk9racr/image/upload/v1719892453/cat-1_q49n2j.png'
+                    }
+                    alt={items.productName}
                     style={{ objectFit: 'cover', width: '50%', marginRight: 20, paddingTop: 10 }}
                   />
                 </Stack>
