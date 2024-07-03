@@ -22,7 +22,7 @@ const AboutHome = () => (
           </Typography>
         </Box>
       </Grid>
-      <Grid container xs={8} sm={8} md={20} spacing={4} justifyContent="center" sx={{ mt: 4 }}>
+      <Grid item container xs={8} sm={8} md={20} spacing={4} justifyContent="center" sx={{ mt: 4 }}>
         <Grid item sm={6}>
           <Card sx={{ textAlign: 'center', p: 2, backgroundColor: '#d6e5d8', color:'#26643b' }}>
             <CardContent>

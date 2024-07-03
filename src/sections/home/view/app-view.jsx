@@ -5,7 +5,6 @@ import { Stack } from '@mui/material';
 import CustomSnackbar from 'src/components/snackbar/snackbar';
 
 import Banner from '../banner';
-import ListMenu from '../list';
 import AboutHome from '../about';
 import ProductList from '../product';
 import CategoryHome from '../category';
@@ -29,9 +28,8 @@ export default function AppView() {
       />
       <Banner />
       <CategoryHome />
-      <ListMenu />
+      <ProductList />
       <AboutHome />
-      <ProductList/>
     </Stack>
   );
 }

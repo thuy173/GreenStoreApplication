@@ -15,7 +15,7 @@ const CategoryHome = () => (
       //   height: '55vh',
       // }}
     >
-      <Grid container xs={12} spacing={2} justifyContent="center">
+      <Grid item container xs={12} spacing={2} justifyContent="center">
         <Grid item xs={12} sm={6} md={4} lg={2.4}>
           <img
             src="https://res.cloudinary.com/dmmk9racr/image/upload/v1719892455/cat-2_vt6yea.png"

@@ -4,6 +4,8 @@ import { Box, Card, Grid, Stack, Button, Typography, CardContent } from '@mui/ma
 
 import ProductServices from 'src/services/ProductServices';
 
+import Link from 'src/components/link';
+
 // ----------------------------------------------------------------------
 
 export default function ProductList() {
@@ -67,64 +69,79 @@ export default function ProductList() {
             >
               -10%
             </Box>
-            <Card
-              sx={{
-                position: 'relative',
-                maxWidth: 325,
-                width: 345,
-                borderRadius: 2,
-                backgroundColor: 'rgba(248, 250, 250, 1)',
-                overflow: 'hidden',
-                '@media (max-width: 1508px)': {
-                  width: 260,
-                },
-              }}
+            <Link
+              href={`product/detail/${items.productId}`}
+              style={{ textDecoration: 'none', color: 'inherit' }}
             >
-              <CardContent>
-                <Typography marginLeft={1} marginTop={3} variant="h6" component="div" gutterBottom>
-                  {items.productName}
-                </Typography>
-                <Typography marginLeft={1} variant="caption" display="block" gutterBottom noWrap>
-                  {items.description}
-                </Typography>
-              </CardContent>
-              <Stack direction="row" alignItems="center" justifyContent="space-between">
-                <Stack direction="column" alignItems="start" marginLeft={3} paddingBottom={10}>
-                  <Typography variant="body2" sx={{ padding: 0 }}>
-                    Price:
+              <Card
+                key={items.productId}
+                sx={{
+                  position: 'relative',
+                  maxWidth: 325,
+                  width: 345,
+                  borderRadius: 2,
+                  backgroundColor: 'rgba(248, 250, 250, 1)',
+                  overflow: 'hidden',
+                  '@media (max-width: 1508px)': {
+                    width: 260,
+                  },
+                  '&:hover': {
+                    cursor: 'pointer',
+                  },
+                }}
+              >
+                <CardContent>
+                  <Typography
+                    marginLeft={1}
+                    marginTop={3}
+                    variant="h6"
+                    component="div"
+                    gutterBottom
+                  >
+                    {items.productName}
                   </Typography>
-                  <Typography variant="h5" sx={{ padding: 0, fontWeight: 'bold' }}>
-                    ${items.price}
+                  <Typography marginLeft={1} variant="caption" display="block" gutterBottom noWrap>
+                    {items.description}
                   </Typography>
-                  <Typography variant="caption" sx={{ padding: 0 }}>
-                    per kg
-                  </Typography>
-                </Stack>
+                </CardContent>
+                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                  <Stack direction="column" alignItems="start" marginLeft={3} paddingBottom={10}>
+                    <Typography variant="body2" sx={{ padding: 0 }}>
+                      Price:
+                    </Typography>
+                    <Typography variant="h5" sx={{ padding: 0, fontWeight: 'bold' }}>
+                      ${items.price}
+                    </Typography>
+                    <Typography variant="caption" sx={{ padding: 0 }}>
+                      per kg
+                    </Typography>
+                  </Stack>
 
-                <img
-                  src="https://res.cloudinary.com/dmmk9racr/image/upload/v1719891019/crispy_persimmon_uwdd3r.png"
-                  alt=""
-                  style={{ objectFit: 'cover', width: '50%', marginRight: 20, paddingTop: 10 }}
-                />
-              </Stack>
-              <Stack direction="column" justifyContent="center" alignItems="center" margin={3}>
-                <Button
-                  variant="contained"
-                  sx={{
-                    backgroundColor: '#d6e5d8',
-                    width: '150px',
-                    color: '#26643b',
-                    borderRadius: 1.4,
-                    '&:hover': {
-                      backgroundColor: '#26643b',
-                      color: '#d6e5d8',
-                    },
-                  }}
-                >
-                  Add to cart
-                </Button>
-              </Stack>
-            </Card>
+                  <img
+                    src="https://res.cloudinary.com/dmmk9racr/image/upload/v1719891019/crispy_persimmon_uwdd3r.png"
+                    alt=""
+                    style={{ objectFit: 'cover', width: '50%', marginRight: 20, paddingTop: 10 }}
+                  />
+                </Stack>
+                <Stack direction="column" justifyContent="center" alignItems="center" margin={3}>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      backgroundColor: '#d6e5d8',
+                      width: '150px',
+                      color: '#26643b',
+                      borderRadius: 1.4,
+                      '&:hover': {
+                        backgroundColor: '#26643b',
+                        color: '#d6e5d8',
+                      },
+                    }}
+                  >
+                    Add to cart
+                  </Button>
+                </Stack>
+              </Card>
+            </Link>
           </Box>
         </Grid>
       ))}
