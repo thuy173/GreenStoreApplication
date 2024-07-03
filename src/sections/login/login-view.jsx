@@ -1,7 +1,8 @@
 import { useState } from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import styled, { keyframes } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
 import Stack from '@mui/material/Stack';
@@ -19,6 +20,75 @@ import Iconify from '../../components/iconify';
 import { login, googleLogin } from '../../redux/actions/authActions';
 
 // ----------------------------------------------------------------------
+
+const fall = keyframes`
+  0% {
+    transform: translate(-50px, -100px) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    transform: translate(20px, 20vh) rotate(45deg);
+    opacity: 0.7;
+  }
+  40% {
+    transform: translate(-20px, 40vh) rotate(90deg);
+    opacity: 0.8;
+  }
+  60% {
+    transform: translate(30px, 60vh) rotate(135deg);
+    opacity: 0.8;
+  }
+  80% {
+    transform: translate(-10px, 80vh) rotate(160deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(0px, 90vh) rotate(180deg);
+    opacity: 1;
+  }
+`;
+
+const BubbleContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+`;
+
+const Bubble = styled.div`
+  position: absolute;
+  width: 86px;
+  height: 86px;
+  animation: ${fall} 15s ease-in-out infinite;
+  &.bubble1 {
+    animation-duration: 23s;
+    left: 10%;
+    top: 0;
+  }
+  &.bubble2 {
+    animation-duration: 24s;
+    left: 30%;
+    top: 0;
+  }
+  &.bubble3 {
+    animation-duration: 22s;
+    left: 70%;
+    top: 0;
+  }
+  &.bubble4 {
+    animation-duration: 23s;
+    left: 50%;
+    top: 0;
+  }
+  &.bubble5 {
+    animation-duration: 21s;
+    left: 20%;
+    top: 0;
+  }
+`;
 
 const LoginView = () => {
   const dispatch = useDispatch();
@@ -133,7 +203,7 @@ const LoginView = () => {
       sx={{
         height: 1,
         backgroundImage:
-          'url(https://res.cloudinary.com/dmmk9racr/image/upload/v1719845050/Untitled_design-pdf_apgxrz.png)',
+          'url(https://res.cloudinary.com/dmmk9racr/image/upload/v1719980006/bg-icon_hb355p.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
@@ -145,6 +215,39 @@ const LoginView = () => {
           left: { xs: 16, md: 24 },
         }}
       />
+
+      <BubbleContainer>
+        <Bubble className="bubble1">
+          <img
+            src="https://res.cloudinary.com/dmmk9racr/image/upload/v1719990874/12d4d6e36b7e09185276ef02c3809622_m3c6fa.png"
+            alt="Bubble"
+          />
+        </Bubble>
+        <Bubble className="bubble2">
+          <img
+            src="https://res.cloudinary.com/dmmk9racr/image/upload/v1719990953/2f06686986d40658d16a477414c5f17d_vspxqe.png"
+            alt="Bubble"
+          />
+        </Bubble>
+        <Bubble className="bubble3">
+          <img
+            src="https://res.cloudinary.com/dmmk9racr/image/upload/v1719990962/55b1d314fe954b6b35159c0fe4022975_gnqobv.png"
+            alt="Bubble"
+          />
+        </Bubble>
+        <Bubble className="bubble4">
+          <img
+            src="https://res.cloudinary.com/dmmk9racr/image/upload/v1719990977/ab76ab557b316334ffde8b3e07bfbd9d_ck9y17.png"
+            alt="Bubble"
+          />
+        </Bubble>
+        <Bubble className="bubble5">
+          <img
+            src="https://res.cloudinary.com/dmmk9racr/image/upload/v1719991055/e77cbc0a0652c2b5ddfda46f23e28ad9_juyomu.png"
+            alt="Bubble"
+          />
+        </Bubble>
+      </BubbleContainer>
 
       <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
         <Stack
