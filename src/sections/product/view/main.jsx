@@ -1,7 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Slider from '@mui/material/Slider';
-import { Box, Grid, Stack, styled, Typography } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import {
+  Box,
+  Grid,
+  Radio,
+  Stack,
+  styled,
+  TextField,
+  RadioGroup,
+  Typography,
+  InputAdornment,
+  FormControlLabel,
+} from '@mui/material';
+
+import CategoryServices from 'src/services/CategoryServices';
 
 import ProductList from '../list-view';
 // ----------------------------------------------------------------------
@@ -29,6 +43,25 @@ function filterProducts(products, maxPrice) {
 
 export default function ProductMain() {
   const [value, setValue] = useState(10);
+  const [categoryData, setCategoryData] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const fetchProductData = async () => {
+    try {
+      const response = await CategoryServices.getData();
+      if (response?.data && response?.status === 200) {
+        setCategoryData(response.data);
+      } else {
+        console.error(response ?? 'Unexpected response structure');
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchProductData();
+  }, []);
 
   const handleChange = (event, newValue) => {
     if (typeof newValue === 'number') {
@@ -78,16 +111,59 @@ export default function ProductMain() {
       },
     },
   });
+
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={2.5}>
-        <Stack sx={{ padding: 2, height: '100%' }}>
-          <Box mb={2}>
-            <Typography variant="h6">Phân loại sản phẩm</Typography>
-            {/* Thêm nội dung phân loại sản phẩm ở đây */}
+        <Stack sx={{ px: 6, py: 3, height: '100%' }}>
+          <Box mt={3}>
+            <TextField
+              variant="outlined"
+              size="small"
+              placeholder="Search..."
+              fullWidth
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon style={{ color: '#52af77' }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#dadada',
+                  },
+                },
+                '& .MuiInputLabel-root': {
+                  '&.Mui-focused': {
+                    color: '#757575',
+                  },
+                },
+              }}
+            />
           </Box>
-          <Box mb={2}>
-            <Typography variant="h6">Giá tối đa: {valueLabelFormat(maxPrice)}</Typography>
+          <Box my={3}>
+            <Typography variant="h6">Category:</Typography>
+            <RadioGroup value={selectedCategory} onChange={handleCategoryChange}>
+              {categoryData.map((category) => (
+                <FormControlLabel
+                  key={category.categoryId}
+                  value={category.categoryId}
+                  control={<Radio style={{ color: '#52af77' }} />}
+                  label={category.categoryName}
+                />
+              ))}
+            </RadioGroup>
+          </Box>
+          <Box mb={3}>
+            <Typography variant="h6">
+              Maximum price:{' '}
+              <span style={{ fontWeight: 'normal' }}>{valueLabelFormat(maxPrice)}</span>
+            </Typography>
             <Box sx={{ width: 200 }}>
               <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
                 <PrettoSlider
@@ -106,7 +182,6 @@ export default function ProductMain() {
           </Box>
           <Box>
             <Typography variant="h6">Lọc đánh giá</Typography>
-            {/* Thêm nội dung lọc đánh giá ở đây */}
           </Box>
         </Stack>
       </Grid>
