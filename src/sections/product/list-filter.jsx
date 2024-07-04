@@ -1,13 +1,65 @@
-import React from 'react';
+import Cookies from 'js-cookie';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 
 import { Box, Card, Grid, Stack, Button, Typography, CardContent } from '@mui/material';
 
+import CartServices from 'src/services/CartServices';
+
 import Link from 'src/components/link';
+import CustomSnackbar from 'src/components/snackbar/snackbar';
 
 // ----------------------------------------------------------------------
 
 export default function ProductListFilter({ productFilterData }) {
+  const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
+
+  const showAlert = (severity, message) => {
+    setAlert({ severity, message, isOpen: true });
+  };
+  const handleCloseAlert = () => {
+    setAlert({ message: null, severity: 'success', isOpen: false });
+  };
+  const getCartUuid = () => {
+    const cartUuid = Cookies.get('CART_UUID');
+    return cartUuid;
+  };
+
+  const userId = localStorage.getItem('uD');
+
+  const handleAddCart = async (productId) => {
+    const customerIdOrUuid = userId || getCartUuid();
+
+    if (!customerIdOrUuid) {
+      showAlert('error', 'Unable to add to cart. Please try again later.');
+      return;
+    }
+
+    const credentials = {
+      productId,
+      quantity: 1,
+    };
+    try {
+      const response = await CartServices.addToCart(customerIdOrUuid, credentials);
+      if (response && response.status === 200) {
+        showAlert('success', 'Add to cart success');
+      } else {
+        setAlert({
+          message:
+            response?.response?.data?.message || 'An error occurred. Please try again later!',
+          severity: 'error',
+          isOpen: true,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to cart:', error);
+      setAlert({
+        message: error.message || 'An error occurred!',
+        severity: 'error',
+        isOpen: true,
+      });
+    }
+  };
   return (
     <Grid container spacing={2} p={3}>
       {productFilterData.map((items, index) => (
@@ -49,25 +101,26 @@ export default function ProductListFilter({ productFilterData }) {
             >
               -10%
             </Box>
-            <Link
-              href={`detail/${items.productId}`}
-              style={{ textDecoration: 'none', color: 'inherit' }}
+
+            <Card
+              sx={{
+                position: 'relative',
+                maxWidth: 325,
+                width: 345,
+                borderRadius: 2,
+                backgroundColor: 'rgba(248, 250, 250, 1)',
+                overflow: 'hidden',
+                '@media (max-width: 1508px)': {
+                  width: 260,
+                },
+                '&:hover': {
+                  cursor: 'pointer',
+                },
+              }}
             >
-              <Card
-                sx={{
-                  position: 'relative',
-                  maxWidth: 325,
-                  width: 345,
-                  borderRadius: 2,
-                  backgroundColor: 'rgba(248, 250, 250, 1)',
-                  overflow: 'hidden',
-                  '@media (max-width: 1508px)': {
-                    width: 260,
-                  },
-                  '&:hover': {
-                    cursor: 'pointer',
-                  },
-                }}
+              <Link
+                href={`detail/${items.productId}`}
+                style={{ textDecoration: 'none', color: 'inherit' }}
               >
                 <CardContent>
                   <Typography
@@ -105,55 +158,64 @@ export default function ProductListFilter({ productFilterData }) {
                     style={{ objectFit: 'cover', width: '50%', marginRight: 20, paddingTop: 10 }}
                   />
                 </Stack>
-                <Stack direction="column" justifyContent="center" alignItems="center" margin={3}>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: '#d6e5d8',
-                      width: '150px',
-                      color: '#26643b',
-                      borderRadius: 1.4,
-                      '&:hover': {
-                        backgroundColor: '#26643b',
-                        color: '#d6e5d8',
-                      },
-                    }}
-                  >
-                    Add to cart
-                  </Button>
-                </Stack>
-              </Card>
-            </Link>
+              </Link>
+              <Stack direction="column" justifyContent="center" alignItems="center" margin={3}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: '#d6e5d8',
+                    width: '150px',
+                    color: '#26643b',
+                    borderRadius: 1.4,
+                    '&:hover': {
+                      backgroundColor: '#26643b',
+                      color: '#d6e5d8',
+                    },
+                  }}
+                  onClick={() => handleAddCart(items.productId)}
+                >
+                  Add to cart
+                </Button>
+              </Stack>
+            </Card>
           </Box>
         </Grid>
       ))}
+      <CustomSnackbar
+        open={alert.isOpen}
+        onClose={handleCloseAlert}
+        message={alert.message}
+        severity={alert.severity}
+      />
     </Grid>
   );
 }
 
 ProductListFilter.propTypes = {
-  productFilterData: PropTypes.arrayOf(PropTypes.shape({
-    productName: PropTypes.string,
-    price: PropTypes.number,
-    quantityInStock: PropTypes.number,
-    description: PropTypes.string,
-    manufactureDate: PropTypes.any,
-    expiryDate: PropTypes.any,
-    rating: PropTypes.number,
-    unitOfMeasure: PropTypes.string,
-    nutrients: PropTypes.arrayOf(PropTypes.any),
-    productImages: PropTypes.arrayOf(
-      PropTypes.shape({
-        productImageId: PropTypes.number,
-        imageUrl: PropTypes.string,
-      })
-    ),
-    ratingList: PropTypes.arrayOf(
-      PropTypes.shape({
-        ratingId: PropTypes.number,
-        ratingValue: PropTypes.any,
-        createAt: PropTypes.any,
-      })
-    ),
-  })),
+  productFilterData: PropTypes.arrayOf(
+    PropTypes.shape({
+      productName: PropTypes.string,
+      price: PropTypes.number,
+      quantityInStock: PropTypes.number,
+      description: PropTypes.string,
+      manufactureDate: PropTypes.any,
+      expiryDate: PropTypes.any,
+      rating: PropTypes.number,
+      unitOfMeasure: PropTypes.string,
+      nutrients: PropTypes.arrayOf(PropTypes.any),
+      productImages: PropTypes.arrayOf(
+        PropTypes.shape({
+          productImageId: PropTypes.number,
+          imageUrl: PropTypes.string,
+        })
+      ),
+      ratingList: PropTypes.arrayOf(
+        PropTypes.shape({
+          ratingId: PropTypes.number,
+          ratingValue: PropTypes.any,
+          createAt: PropTypes.any,
+        })
+      ),
+    })
+  ),
 };
