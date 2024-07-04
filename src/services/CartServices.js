@@ -1,4 +1,4 @@
-import { getApi, putApi2, postApi } from './agent';
+import { getApi, putApi2, postApi, deleteApi } from './agent';
 
 const CartServices = {
   getCart: async (id) => {
@@ -26,6 +26,15 @@ const CartServices = {
         `cart/${customerIdOrUuid}/items/${cartItemId}?quantity=${quantity}`,
         payload
       );
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  },
+  deleteItem: async (customerIdOrUuid, cartItemId, payload) => {
+    try {
+      const result = await deleteApi(`cart/${customerIdOrUuid}/items/${cartItemId}`, payload);
       return result;
     } catch (error) {
       console.log(error);
