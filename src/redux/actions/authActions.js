@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { jwtDecode } from 'jwt-decode';
+
 import { setLocalStorage } from 'src/services/agent';
 import LoginServices from 'src/services/LoginServices';
 
@@ -47,7 +50,12 @@ export const login = (credentials, navigate) => async (dispatch) => {
     const accessToken = response.data;
 
     if (accessToken !== undefined) {
+
+      const decodedToken = jwtDecode(accessToken);
+      const userIds = decodedToken.userId;
+      
       setLocalStorage('accessToken', accessToken);
+      setLocalStorage('uD', userIds);
 
       dispatch(loginSuccess(accessToken, 'Login successful!'));
       dispatch(setMessage('Login successful!', 'success'));

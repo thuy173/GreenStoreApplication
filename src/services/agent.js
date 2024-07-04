@@ -3,6 +3,7 @@ import axios from 'axios';
 const instance = axios.create({
   baseURL: 'http://localhost:8086/api/',  
   timeout: 60000,
+  withCredentials: true,
 });
 
 // INTERCEPTORS CONFIG START
