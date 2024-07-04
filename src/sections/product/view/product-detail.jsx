@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { useNavigate } from 'react-router-dom';
 
 import { Add, Remove } from '@mui/icons-material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -75,6 +76,7 @@ function SamplePrevArrow(props) {
 }
 
 const ProductDetail = ({ initialValues }) => {
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(initialValues.productImages[0].imageUrl);
   const [quantity, setQuantity] = useState(1);
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
@@ -147,6 +149,7 @@ const ProductDetail = ({ initialValues }) => {
       const response = await CartServices.addToCart(customerIdOrUuid, credentials);
       if (response && response.status === 200) {
         showAlert('success', 'Add to cart success');
+        navigate('/cart');
       } else {
         setAlert({
           message:

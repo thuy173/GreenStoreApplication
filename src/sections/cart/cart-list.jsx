@@ -68,7 +68,7 @@ export default function CartDetail() {
       if (response?.data?.cartItem && response?.status === 200) {
         setCartItemData(response.data.cartItem.map((item) => ({ ...item, checked: false })));
         setCartData(response.data);
-        
+
         const cartItemCount = response.data.cartItem.length;
         localStorage.setItem('cartItemCount', cartItemCount);
       } else {
