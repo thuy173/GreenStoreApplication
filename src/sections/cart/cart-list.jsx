@@ -66,9 +66,11 @@ export default function CartDetail() {
     try {
       const response = await CartServices.getCart(id);
       if (response?.data?.cartItem && response?.status === 200) {
-        console.error(response);
         setCartItemData(response.data.cartItem.map((item) => ({ ...item, checked: false })));
         setCartData(response.data);
+        
+        const cartItemCount = response.data.cartItem.length;
+        localStorage.setItem('cartItemCount', cartItemCount);
       } else {
         console.error(response ?? 'Unexpected response structure');
       }

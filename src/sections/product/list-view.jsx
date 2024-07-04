@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 
 import { Box, Card, Grid, Stack, Button, Typography, CardContent } from '@mui/material';
@@ -12,6 +13,7 @@ import CustomSnackbar from 'src/components/snackbar/snackbar';
 // ----------------------------------------------------------------------
 
 export default function ProductList() {
+  const navigate = useNavigate();
   const [productData, setProductData] = useState([]);
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
 
@@ -56,7 +58,7 @@ export default function ProductList() {
     try {
       const response = await CartServices.addToCart(customerIdOrUuid, credentials);
       if (response && response.status === 200) {
-        showAlert('success', 'Add to cart success');
+        navigate('/cart');
       } else {
         setAlert({
           message:

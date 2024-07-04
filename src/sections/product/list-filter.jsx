@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Box, Card, Grid, Stack, Button, Typography, CardContent } from '@mui/material';
 
@@ -12,6 +13,7 @@ import CustomSnackbar from 'src/components/snackbar/snackbar';
 // ----------------------------------------------------------------------
 
 export default function ProductListFilter({ productFilterData }) {
+  const navigate = useNavigate();
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
 
   const showAlert = (severity, message) => {
@@ -42,7 +44,7 @@ export default function ProductListFilter({ productFilterData }) {
     try {
       const response = await CartServices.addToCart(customerIdOrUuid, credentials);
       if (response && response.status === 200) {
-        showAlert('success', 'Add to cart success');
+        navigate('/cart');
       } else {
         setAlert({
           message:
