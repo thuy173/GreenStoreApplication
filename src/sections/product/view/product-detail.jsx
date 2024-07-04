@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import Slider from 'react-slick';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
@@ -19,6 +20,10 @@ import {
   Typography,
   ButtonGroup,
 } from '@mui/material';
+
+import CartServices from 'src/services/CartServices';
+
+import CustomSnackbar from 'src/components/snackbar/snackbar';
 
 function SampleNextArrow(props) {
   // eslint-disable-next-line react/prop-types
@@ -72,8 +77,17 @@ function SamplePrevArrow(props) {
 const ProductDetail = ({ initialValues }) => {
   const [selectedImage, setSelectedImage] = useState(initialValues.productImages[0].imageUrl);
   const [quantity, setQuantity] = useState(1);
+  const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
+
+  const showAlert = (severity, message) => {
+    setAlert({ severity, message, isOpen: true });
+  };
+  const handleCloseAlert = () => {
+    setAlert({ message: null, severity: 'success', isOpen: false });
+  };
 
   const {
+    productId,
     productName,
     price,
     quantityInStock,
@@ -108,6 +122,47 @@ const ProductDetail = ({ initialValues }) => {
     autoplaySpeed: 8000,
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
+  };
+
+  const getCartUuid = () => {
+    const cartUuid = Cookies.get('CART_UUID');
+    return cartUuid;
+  };
+
+  const userId = localStorage.getItem('uD');
+
+  const handleAddCart = async (quantityItem) => {
+    const customerIdOrUuid = userId || getCartUuid();
+
+    if (!customerIdOrUuid) {
+      showAlert('error', 'Unable to add to cart. Please try again later.');
+      return;
+    }
+
+    const credentials = {
+      productId,
+      quantity: quantityItem,
+    };
+    try {
+      const response = await CartServices.addToCart(customerIdOrUuid, credentials);
+      if (response && response.status === 200) {
+        showAlert('success', 'Add to cart success');
+      } else {
+        setAlert({
+          message:
+            response?.response?.data?.message || 'An error occurred. Please try again later!',
+          severity: 'error',
+          isOpen: true,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to cart:', error);
+      setAlert({
+        message: error.message || 'An error occurred!',
+        severity: 'error',
+        isOpen: true,
+      });
+    }
   };
 
   return (
@@ -201,6 +256,7 @@ const ProductDetail = ({ initialValues }) => {
                   color: '#d6e5d8',
                 },
               }}
+              onClick={() => handleAddCart(quantity)}
               variant="contained"
               endIcon={<ArrowForwardIcon />}
             >
@@ -249,12 +305,19 @@ const ProductDetail = ({ initialValues }) => {
           <Typography variant="body1">Expiry Date: {expiryDate}</Typography>
         </Grid>
       </Grid>
+      <CustomSnackbar
+        open={alert.isOpen}
+        onClose={handleCloseAlert}
+        message={alert.message}
+        severity={alert.severity}
+      />
     </Stack>
   );
 };
 
 ProductDetail.propTypes = {
   initialValues: PropTypes.shape({
+    productId: PropTypes.any,
     productName: PropTypes.string,
     price: PropTypes.number,
     quantityInStock: PropTypes.number,
