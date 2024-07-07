@@ -14,7 +14,7 @@ import {
   DialogContent,
 } from '@mui/material';
 
-import ProfileServices from 'src/services/ProfileServices';
+import AddressServices from 'src/services/AddressServices';
 
 import Label from 'src/components/label/label';
 import CustomSnackbar from 'src/components/snackbar/snackbar';
@@ -23,7 +23,6 @@ import AddAddressNew from './view/add-address';
 // ----------------------------------------------------------------------
 
 export default function AddressUser({ initialValues, onLoadData }) {
-  const userId = localStorage.getItem('uD');
   const [addresses] = useState(initialValues.address || []);
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
   const [openAddDialog, setOpenAddDialog] = useState(false);
@@ -42,16 +41,13 @@ export default function AddressUser({ initialValues, onLoadData }) {
   const handleCloseAdd = () => {
     setOpenAddDialog(false);
   };
-  const handleUpdateProfile = async () => {
-    if (!userId) {
-      showAlert('error', 'Unable to update profile. Please try again later.');
-      return;
-    }
 
+  const handleDeleteAddress = async (addressId) => {
     try {
-      const response = await ProfileServices.updateData(userId, addresses);
+      const response = await AddressServices.deleteData(addressId);
       if (response && response.status === 200) {
-        showAlert('success', 'Profile updated successfully!');
+        showAlert('success', 'Delete address successfully!');
+        onLoadData();
       } else {
         showAlert(
           'error',
@@ -59,7 +55,7 @@ export default function AddressUser({ initialValues, onLoadData }) {
         );
       }
     } catch (error) {
-      console.error('Failed to update profile:', error);
+      console.error('Failed to delete address:', error);
       showAlert('error', error.message || 'An error occurred!');
     }
   };
@@ -122,9 +118,25 @@ export default function AddressUser({ initialValues, onLoadData }) {
                       p: 0,
                     },
                   }}
-                  onClick={handleUpdateProfile}
+                  onClick={handleDeleteAddress}
                 >
                   Update
+                </Button>
+                <Button
+                  variant="text"
+                  sx={{
+                    color: 'red',
+                    '&:hover': {
+                      backgroundColor: '#f5fcf4',
+                    },
+                    '&:focus': {
+                      backgroundColor: '#f5fcf4',
+                      p: 0,
+                    },
+                  }}
+                  onClick={() => handleDeleteAddress(addressObj.addressId)}
+                >
+                  Delete
                 </Button>
               </Stack>
             </Stack>

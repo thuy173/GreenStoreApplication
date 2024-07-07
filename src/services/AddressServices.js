@@ -1,4 +1,4 @@
-import { getApi, postApi } from './agent';
+import { getApi, postApi, deleteApi } from './agent';
 
 const AddressServices = {
   getData: async () => {
@@ -22,6 +22,15 @@ const AddressServices = {
   addData: async (payload) => {
     try {
       const result = await postApi(`address`, payload);
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  },
+  deleteData: async (id) => {
+    try {
+      const result = await deleteApi(`address/${id}`);
       return result;
     } catch (error) {
       console.log(error);
