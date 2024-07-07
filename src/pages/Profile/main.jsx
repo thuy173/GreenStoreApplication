@@ -7,7 +7,7 @@ import { ProductMain } from 'src/sections/product/view';
 const ProductPage = () => (
   <>
     <Helmet>
-      <title> Product(❁´◡`❁) </title>
+      <title> Profile(❁´◡`❁) </title>
     </Helmet>
 
     <ProductMain />
