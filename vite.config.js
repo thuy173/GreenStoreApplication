@@ -30,9 +30,8 @@ export default defineConfig({
     port: 3038,
     proxy: {
       '/api': {
-        target: 'https://vapi.vnappmob.com',
+        target: 'http://localhost:5000',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
         secure: false,
       },
     },

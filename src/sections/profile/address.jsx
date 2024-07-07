@@ -65,6 +65,14 @@ export default function AddressUser({ initialValues, onLoadData }) {
     }
   };
 
+  const handleSuccess = (severity, message) => {
+    setOpenAddDialog(false);
+    onLoadData();
+    setTimeout(() => {
+      setAlert({ isOpen: true, message, severity });
+    }, 200);
+  };
+
   return (
     <Stack pt={5}>
       <Grid item xs={6}>
@@ -141,7 +149,7 @@ export default function AddressUser({ initialValues, onLoadData }) {
             <CloseIcon />
           </IconButton>
           <DialogContent>
-            <AddAddressNew onLoadData={onLoadData} onClose={handleCloseAdd} />
+            <AddAddressNew onSuccess={handleSuccess} />
           </DialogContent>
         </Dialog>
       )}
