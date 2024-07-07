@@ -10,6 +10,7 @@ export const DashboardLayout = lazy(() => import('../layouts/dashboard'));
 export const ProductPage = lazy(() => import('../pages/ProductPage/main'));
 export const ProductDetailPage = lazy(() => import('../pages/ProductPage/detail'));
 export const CartPage = lazy(() => import('../pages/CartPage/main'));
+export const ProfilePage = lazy(() => import('../pages/Profile/main'));
 
 
 // ----------------------------------------------------------------------
@@ -29,6 +30,7 @@ export default function Router() {
         { path: 'product', element: <ProductPage /> },
         { path: 'product/detail/:id', element: <ProductDetailPage /> },
         { path: 'cart', element: <CartPage /> },
+        { path: 'profile', element: <ProfilePage /> },
 
        
       ],

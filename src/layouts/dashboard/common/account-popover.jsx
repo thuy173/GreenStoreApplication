@@ -24,10 +24,6 @@ const MENU_OPTIONS = [
     label: 'Profile',
     icon: 'eva:person-fill',
   },
-  // {
-  //   label: 'Settings',
-  //   icon: 'eva:settings-2-fill',
-  // },
 ];
 
 // ----------------------------------------------------------------------
@@ -39,7 +35,7 @@ export const setMessage = (message, severity = 'success') => ({
 export default function AccountPopover() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isLoggedIn = useSelector(selectIsLoggedIn); 
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const [open, setOpen] = useState(null);
 

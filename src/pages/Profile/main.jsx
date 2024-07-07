@@ -1,16 +1,16 @@
 import { Helmet } from 'react-helmet-async';
 
-import { ProductMain } from 'src/sections/product/view';
+import InformationBaseView from 'src/sections/profile/view/information-view';
 
 // ----------------------------------------------------------------------
 
-const ProductPage = () => (
+const ProfilePage = () => (
   <>
     <Helmet>
       <title> Profile(❁´◡`❁) </title>
     </Helmet>
 
-    <ProductMain />
+    <InformationBaseView />
   </>
 );
-export default ProductPage;
+export default ProfilePage;
