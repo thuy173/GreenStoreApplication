@@ -143,13 +143,5 @@ InformationBase.propTypes = {
     fullName: PropTypes.string,
     email: PropTypes.string,
     phoneNumber: PropTypes.string,
-    address: PropTypes.arrayOf(
-      PropTypes.shape({
-        addressId: PropTypes.number,
-        address: PropTypes.string,
-        addressDetail: PropTypes.string,
-        isActive: PropTypes.any,
-      })
-    ),
   }),
 };

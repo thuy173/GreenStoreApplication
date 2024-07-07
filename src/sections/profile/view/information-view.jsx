@@ -19,20 +19,22 @@ const InformationBaseView = () => {
     localStorage.getItem('choice') || 'Information'
   );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await ProfileServices.getDataById(userId);
-        if (response?.data && response?.status === 200) {
-          setDataDetail(response.data);
-        } else {
-          console.error(response ?? 'Unexpected response structure');
-        }
-      } catch (error) {
-        console.error(error);
+  const fetchData = async () => {
+    try {
+      const response = await ProfileServices.getDataById(userId);
+      if (response?.data && response?.status === 200) {
+        setDataDetail(response.data);
+      } else {
+        console.error(response ?? 'Unexpected response structure');
       }
-    };
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const handleChange = async (categoryName) => {
@@ -50,7 +52,7 @@ const InformationBaseView = () => {
     }
 
     if (selectedChange === 'Address') {
-      return <AddressUser initialValues={dataDetail} />;
+      return <AddressUser initialValues={dataDetail} onLoadData={fetchData} />;
     }
 
     return null;

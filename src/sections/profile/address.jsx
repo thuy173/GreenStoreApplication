@@ -1,83 +1,77 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import { Stack, Button, TextField } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import {
+  Grid,
+  Stack,
+  Button,
+  Dialog,
+  Divider,
+  Typography,
+  IconButton,
+  DialogTitle,
+  DialogContent,
+} from '@mui/material';
 
 import ProfileServices from 'src/services/ProfileServices';
 
+import Label from 'src/components/label/label';
 import CustomSnackbar from 'src/components/snackbar/snackbar';
 
+import AddAddressNew from './view/add-address';
 // ----------------------------------------------------------------------
 
-export default function AddressUser({ initialValues }) {
+export default function AddressUser({ initialValues, onLoadData }) {
   const userId = localStorage.getItem('uD');
+  const [addresses] = useState(initialValues.address || []);
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
+  const [openAddDialog, setOpenAddDialog] = useState(false);
 
   const showAlert = (severity, message) => {
     setAlert({ severity, message, isOpen: true });
   };
+
   const handleCloseAlert = () => {
     setAlert({ message: null, severity: 'success', isOpen: false });
   };
 
+  const handleOpenAdd = () => {
+    setOpenAddDialog(true);
+  };
+  const handleCloseAdd = () => {
+    setOpenAddDialog(false);
+  };
   const handleUpdateProfile = async () => {
     if (!userId) {
-      showAlert('error', 'Unable to add to cart. Please try again later.');
+      showAlert('error', 'Unable to update profile. Please try again later.');
       return;
     }
 
-    const credentials = {
-      quantity: 1,
-    };
     try {
-      const response = await ProfileServices.updateData(userId, credentials);
+      const response = await ProfileServices.updateData(userId, addresses);
       if (response && response.status === 200) {
-        showAlert('success', 'Update information successfully!');
+        showAlert('success', 'Profile updated successfully!');
       } else {
-        setAlert({
-          message:
-            response?.response?.data?.message || 'An error occurred. Please try again later!',
-          severity: 'error',
-          isOpen: true,
-        });
+        showAlert(
+          'error',
+          response?.response?.data?.message || 'An error occurred. Please try again later!'
+        );
       }
     } catch (error) {
       console.error('Failed to update profile:', error);
-      setAlert({
-        message: error.message || 'An error occurred!',
-        severity: 'error',
-        isOpen: true,
-      });
+      showAlert('error', error.message || 'An error occurred!');
     }
   };
 
   return (
     <Stack pt={5}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} p={3}>
-        <TextField
-          id="email"
-          label="Email"
-          variant="outlined"
-          value={initialValues.email}
-          name="email"
-          fullWidth
-        />
-        <TextField
-          id="phoneNumber"
-          label="Phone number"
-          variant="outlined"
-          value={initialValues.phoneNumber}
-          name="phoneNumber"
-          fullWidth
-        />
-      </Stack>
-
-      <Stack direction="column" justifyContent="center" alignItems="center" margin={3}>
+      <Grid item xs={6}>
         <Button
           variant="contained"
           sx={{
             backgroundColor: '#d6e5d8',
-            width: '150px',
             color: '#26643b',
             borderRadius: 1.4,
             '&:hover': {
@@ -85,12 +79,72 @@ export default function AddressUser({ initialValues }) {
               color: '#d6e5d8',
             },
           }}
-          onClick={() => handleUpdateProfile()}
+          startIcon={<AddIcon />}
+          onClick={handleOpenAdd}
         >
-          Update
+          Add new address
         </Button>
-      </Stack>
+      </Grid>
+      <Divider>My address</Divider>
 
+      <Stack px={4}>
+        {addresses.map((addressObj) => (
+          <React.Fragment key={addressObj.addressId}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Stack
+                direction="column"
+                justifyContent="space-around"
+                alignItems="start"
+                spacing={2}
+                p={3}
+              >
+                <Typography variant="body1">{addressObj.address}</Typography>
+                <Typography variant="body1">{addressObj.addressDetail}</Typography>
+                {addressObj.isActive && <Label> Default</Label>}
+              </Stack>
+              <Stack>
+                <Button
+                  variant="text"
+                  sx={{
+                    color: '#26643b',
+                    '&:hover': {
+                      backgroundColor: '#f5fcf4',
+                    },
+                    '&:focus': {
+                      backgroundColor: '#f5fcf4',
+                      p: 0,
+                    },
+                  }}
+                  onClick={handleUpdateProfile}
+                >
+                  Update
+                </Button>
+              </Stack>
+            </Stack>
+            <Divider />
+          </React.Fragment>
+        ))}
+      </Stack>
+      {openAddDialog && (
+        <Dialog open={openAddDialog} onClose={handleCloseAdd} fullWidth maxWidth="md">
+          <DialogTitle>Add address new</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseAdd}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent>
+            <AddAddressNew onLoadData={onLoadData} onClose={handleCloseAdd} />
+          </DialogContent>
+        </Dialog>
+      )}
       <CustomSnackbar
         open={alert.isOpen}
         onClose={handleCloseAlert}
@@ -102,18 +156,16 @@ export default function AddressUser({ initialValues }) {
 }
 
 AddressUser.propTypes = {
+  onLoadData: PropTypes.func,
   initialValues: PropTypes.shape({
     customerId: PropTypes.any,
-    fullName: PropTypes.string,
-    email: PropTypes.string,
-    phoneNumber: PropTypes.string,
     address: PropTypes.arrayOf(
       PropTypes.shape({
         addressId: PropTypes.number,
         address: PropTypes.string,
         addressDetail: PropTypes.string,
-        isActive: PropTypes.any,
+        isActive: PropTypes.bool,
       })
     ),
-  }),
+  }).isRequired,
 };
