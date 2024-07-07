@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -11,9 +11,9 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
-import { account } from 'src/_mock/account';
 import { logOut } from 'src/redux/actions/authActions';
 import { clearLocalStorage } from 'src/services/agent';
+import ProfileServices from 'src/services/ProfileServices';
 import { SET_MESSAGE } from 'src/redux/actions/actionTypes';
 import { selectIsLoggedIn } from 'src/redux/selectors/authSelector';
 
@@ -36,7 +36,8 @@ export default function AccountPopover() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoggedIn = useSelector(selectIsLoggedIn);
-
+  const userId = localStorage.getItem('uD');
+  const [userData, setUserData] = useState({});
   const [open, setOpen] = useState(null);
 
   const handleOpen = (event) => {
@@ -77,6 +78,24 @@ export default function AccountPopover() {
     navigate('/profile');
   };
 
+  const fetchData = async () => {
+    try {
+      const response = await ProfileServices.getDataById(userId);
+      if (response?.data && response?.status === 200) {
+        setUserData(response.data);
+      } else {
+        console.error(response ?? 'Unexpected response structure');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
+
   return (
     <>
       <IconButton
@@ -92,15 +111,15 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={account.photoURL}
-          alt={account.displayName}
+          src={userData?.photoURL}
+          alt={userData?.fullName}
           sx={{
             width: 42,
             height: 42,
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >
-          {account.displayName.charAt(0).toUpperCase()}
+          {userData?.fullName?.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
@@ -119,41 +138,43 @@ export default function AccountPopover() {
           },
         }}
       >
-        <Box sx={{ my: 1.5, px: 2 }}>
-          <Typography variant="subtitle2" noWrap>
-            {account.displayName}
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
-          </Typography>
-        </Box>
-
-        <Divider sx={{ borderStyle: 'dashed' }} />
-
-        {MENU_OPTIONS.map((option) => (
-          <MenuItem key={option.label} onClick={handleProfileClick}>
-            {option.label}
-          </MenuItem>
-        ))}
-
-        <Divider sx={{ borderStyle: 'dashed', m: 0 }} />
-
         {isLoggedIn ? (
-          <MenuItem
-            disableRipple
-            disableTouchRipple
-            onClick={handleLogout}
-            sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
-          >
-            Logout
-          </MenuItem>
+          <>
+            <Box sx={{ my: 1.5, px: 2 }}>
+              <Typography variant="subtitle2" noWrap>
+                {userData?.fullName}
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+                {userData?.email}
+              </Typography>
+            </Box>
+
+            <Divider sx={{ borderStyle: 'dashed' }} />
+
+            {MENU_OPTIONS.map((option) => (
+              <MenuItem key={option.label} onClick={handleProfileClick}>
+                {option.label}
+              </MenuItem>
+            ))}
+
+            <Divider sx={{ borderStyle: 'dashed', m: 0 }} />
+
+            <MenuItem
+              disableRipple
+              disableTouchRipple
+              onClick={handleLogout}
+              sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
+            >
+              Logout
+            </MenuItem>
+          </>
         ) : (
           <>
             <MenuItem
               disableRipple
               disableTouchRipple
               onClick={handleLogin}
-              sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
+              sx={{ typography: 'body2', color: 'success.main', py: 1.5 }}
             >
               Login
             </MenuItem>
@@ -161,7 +182,7 @@ export default function AccountPopover() {
               disableRipple
               disableTouchRipple
               onClick={handleRegister}
-              sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
+              sx={{ typography: 'body2', color: 'default.main', py: 1.5 }}
             >
               Register
             </MenuItem>

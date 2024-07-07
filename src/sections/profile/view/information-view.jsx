@@ -96,7 +96,7 @@ const InformationBaseView = () => {
       <Box
         sx={{
           width: '1px',
-          backgroundColor: '#26643b',
+          backgroundColor: '#e1eae5',
         }}
       />
       <Grid item xs={12} sm={9.4}>

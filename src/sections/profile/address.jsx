@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import {
-  Grid,
   Stack,
   Button,
   Dialog,
@@ -75,7 +74,7 @@ export default function AddressUser({ initialValues, onLoadData }) {
 
   return (
     <Stack pt={5}>
-      <Grid item xs={6}>
+      <Stack justifyContent="end" alignItems="end" pr={3.8}>
         <Button
           variant="contained"
           sx={{
@@ -92,7 +91,7 @@ export default function AddressUser({ initialValues, onLoadData }) {
         >
           Add new address
         </Button>
-      </Grid>
+      </Stack>
       <Divider>My address</Divider>
 
       <Stack px={4}>
