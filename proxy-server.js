@@ -10,9 +10,8 @@ app.use('/api', createProxyMiddleware({
   target: 'https://vapi.vnappmob.com',
   changeOrigin: true,
   pathRewrite: { '^/api': '' },
-  selfHandleResponse: true, // Important for handling redirects
+  selfHandleResponse: true,
   onProxyRes(proxyRes, req, res) {
-    // Check for redirect
     if (proxyRes.headers.location) {
       const {location} = proxyRes.headers;
       const protocol = location.startsWith('https') ? https : http;
