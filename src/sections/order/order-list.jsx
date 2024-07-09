@@ -1,8 +1,22 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
-import { Box, Grid, Stack, Button, Divider, TextField, Container, Typography } from '@mui/material';
+import {
+  Box,
+  Grid,
+  Stack,
+  Button,
+  Dialog,
+  Divider,
+  TextField,
+  Container,
+  Typography,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
 
 import OrderServices from 'src/services/OrderServices';
 import { clearCart } from 'src/redux/actions/cartAction';
@@ -22,6 +36,8 @@ export default function OrderList({
 }) {
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleCloseAlert = () => {
     setAlert({ message: null, severity: 'success', isOpen: false });
@@ -67,10 +83,11 @@ export default function OrderList({
     try {
       const response = await OrderServices.addData(payload);
       if (response && response.status === 200) {
-        showAlert('success', 'Order placed successfully!');
-        console.log('Order successful, dispatching clearCart');
         dispatch(clearCart());
-        console.log('clearCart dispatched');
+        setOpenDialog(true);
+        setTimeout(() => {
+          navigate('/profile?choice=Purchase%20Order');
+        }, 300000);
       } else {
         showAlert(
           'error',
@@ -192,6 +209,15 @@ export default function OrderList({
         message={alert.message}
         severity={alert.severity}
       />
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Success</DialogTitle>
+        <DialogContent>Your order has been placed successfully!</DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }

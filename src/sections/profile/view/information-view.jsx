@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react';
 
+import InfoIcon from '@mui/icons-material/Info';
+import HomeIcon from '@mui/icons-material/Home';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Box, Grid, Stack, Avatar, Button, CardHeader, Typography } from '@mui/material';
 
 import LoadingPage from 'src/pages/loading_page';
 import ProfileServices from 'src/services/ProfileServices';
 import AddressServices from 'src/services/AddressServices';
+
+import PurchaseOrder from 'src/sections/order/view/detail';
 
 import AddressUser from '../address';
 import InformationBase from '../information-base';
@@ -14,8 +19,9 @@ const InformationBaseView = () => {
   const [dataDetail, setDataDetail] = useState(null);
   const [addressData, setAddressData] = useState(null);
   const [choiceData] = useState([
-    { categoryId: 1, categoryName: 'Information' },
-    { categoryId: 2, categoryName: 'Address' },
+    { categoryId: 1, categoryName: 'Information', icon: <InfoIcon /> },
+    { categoryId: 2, categoryName: 'Address', icon: <HomeIcon /> },
+    { categoryId: 3, categoryName: 'Purchase Order', icon: <ShoppingCartIcon /> },
   ]);
   const [selectedChange, setSelectedChange] = useState(
     localStorage.getItem('choice') || 'Information'
@@ -69,6 +75,9 @@ const InformationBaseView = () => {
     if (selectedChange === 'Address') {
       return <AddressUser initialValues={addressData} onLoadData={fetchAllAddressData} />;
     }
+    if (selectedChange === 'Purchase Order') {
+      return <PurchaseOrder />;
+    }
 
     return null;
   };
@@ -76,18 +85,19 @@ const InformationBaseView = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={2.5}>
-        <Stack sx={{ px: 3, py: 3, height: '100%' }}>
+        <Stack sx={{ px: 3, py: 2, height: '100%' }}>
           <CardHeader
             avatar={<Avatar src={dataDetail?.avatarUrl} alt={dataDetail?.fullName} />}
             title={<Typography variant="h6">{dataDetail?.fullName}</Typography>}
           />
 
-          <Box my={3}>
-            <Stack spacing={2}>
+          <Box ml={3} mt={5}>
+            <Stack spacing={2} justifyContent="flex-start" alignItems="flex-start">
               {choiceData.map((category) => (
                 <Button
                   key={category.categoryId}
-                  variant={selectedChange === category.categoryName ? 'text' : 'text'}
+                  variant="text"
+                  startIcon={category.icon}
                   onClick={() => handleChange(category.categoryName)}
                   sx={{
                     color: selectedChange === category.categoryName ? '#26643b' : '#3b413a',
