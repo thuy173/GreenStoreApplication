@@ -6,3 +6,9 @@ export const LOGOUT = 'LOGOUT';
 
 export const SET_MESSAGE = "SET_MESSAGE";
 export const CLEAR_MESSAGE = "CLEAR_MESSAGE";
+
+export const PAYMENT_ACTION = 'PAYMENT_ACTION';
+export const BUY_WITHOUT_ACCOUNT_ACTION = 'BUY_WITHOUT_ACCOUNT_ACTION';
+export const CLEAR_CART = 'CLEAR_CART';
+export const UPDATE_CART = 'UPDATE_CART';
+export const FETCH_CART_SUCCESS = 'FETCH_CART_SUCCESS';

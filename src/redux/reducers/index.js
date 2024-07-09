@@ -2,17 +2,18 @@ import { combineReducers } from 'redux';
 import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 
 import authReducer from './authReducer';
+import cartReducer from './cartReducer';
 import messageReducer from './messageReducer';
 
 const createNoopStorage = () => ({
   getItem() {
-      return Promise.resolve(null);
+    return Promise.resolve(null);
   },
   setItem(_key, value) {
-      return Promise.resolve(value);
+    return Promise.resolve(value);
   },
   removeItem() {
-      return Promise.resolve();
+    return Promise.resolve();
   },
 });
 
@@ -22,12 +23,13 @@ const rootPersistConfig = {
   key: 'root',
   storage,
   keyPrefix: 'redux-',
-  whitelist: [],
+  whitelist: ['auth', 'cart', 'message'],
 };
 
 const rootReducer = combineReducers({
   auth: authReducer,
   message: messageReducer,
+  cart: cartReducer,
 });
 
 export { rootReducer, rootPersistConfig };

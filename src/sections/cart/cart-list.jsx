@@ -1,29 +1,24 @@
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 import { useMemo, useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Add, Remove } from '@mui/icons-material';
-import {
-  Box,
-  Grid,
-  Stack,
-  Paper,
-  Button,
-  Checkbox,
-  TextField,
-  Typography,
-  IconButton,
-  FormControlLabel,
-} from '@mui/material';
+import { Box, Grid, Stack, Paper, Button, Checkbox, TextField, Typography, IconButton, FormControlLabel } from '@mui/material';
 
 import CartServices from 'src/services/CartServices';
+import { clearCart, updateCart, paymentAction, fetchCartSuccess, buyWithoutAccountAction } from 'src/redux/actions/cartAction';
 
 import CustomSnackbar from 'src/components/snackbar/snackbar';
 
-// ----------------------------------------------------------------------
 
 export default function CartDetail() {
-  const [cartItemData, setCartItemData] = useState([]);
-  const [cartData, setCartData] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const cartItemData = useSelector((state) => state.cart.cartItems);
+  const cartData = useSelector((state) => state.cart.cartData);
+  const { isLoggedIn } = useSelector((state) => state.auth);
+
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
 
   const handleCloseAlert = () => {
@@ -33,7 +28,7 @@ export default function CartDetail() {
   const handleIncrement = async (index) => {
     const newCartData = [...cartItemData];
     newCartData[index].quantity += 1;
-    setCartItemData(newCartData);
+    dispatch(updateCart(newCartData));
     await handleChangeQuantity(newCartData[index].quantity, newCartData[index].cartItemId);
   };
 
@@ -41,7 +36,7 @@ export default function CartDetail() {
     const newCartData = [...cartItemData];
     if (newCartData[index].quantity > 1) {
       newCartData[index].quantity -= 1;
-      setCartItemData(newCartData);
+      dispatch(updateCart(newCartData));
       await handleChangeQuantity(newCartData[index].quantity, newCartData[index].cartItemId);
     }
   };
@@ -49,7 +44,7 @@ export default function CartDetail() {
   const handleCheckboxChange = (index) => (event) => {
     const newCartData = [...cartItemData];
     newCartData[index].checked = event.target.checked;
-    setCartItemData(newCartData);
+    dispatch(updateCart(newCartData));
   };
 
   const getCartUuid = () => Cookies.get('CART_UUID');
@@ -66,8 +61,7 @@ export default function CartDetail() {
     try {
       const response = await CartServices.getCart(id);
       if (response?.data?.cartItem && response?.status === 200) {
-        setCartItemData(response.data.cartItem.map((item) => ({ ...item, checked: false })));
-        setCartData(response.data);
+        dispatch(fetchCartSuccess(response.data));
 
         const cartItemCount = response.data.cartItem.length;
         localStorage.setItem('cartItemCount', cartItemCount);
@@ -86,8 +80,7 @@ export default function CartDetail() {
         fetchCartData();
       } else {
         setAlert({
-          message:
-            response?.response?.data?.message || 'An error occurred. Please try again later!',
+          message: response?.response?.data?.message || 'An error occurred. Please try again later!',
           severity: 'error',
           isOpen: true,
         });
@@ -101,6 +94,7 @@ export default function CartDetail() {
       });
     }
   };
+
   const handleDeleteItem = async (cartItemId) => {
     try {
       const response = await CartServices.deleteItem(cartData.customerId, cartItemId);
@@ -108,14 +102,13 @@ export default function CartDetail() {
         fetchCartData();
       } else {
         setAlert({
-          message:
-            response?.response?.data?.message || 'An error occurred. Please try again later!',
+          message: response?.response?.data?.message || 'An error occurred. Please try again later!',
           severity: 'error',
           isOpen: true,
         });
       }
     } catch (error) {
-      console.error('Failed to update quantity:', error);
+      console.error('Failed to delete item:', error);
       setAlert({
         message: error.message || 'An error occurred!',
         severity: 'error',
@@ -140,8 +133,30 @@ export default function CartDetail() {
     [cartItemData]
   );
 
+  const handlePayment = () => {
+    if (isLoggedIn) {
+      const userId = localStorage.getItem('uD');
+      dispatch(paymentAction(userId, cartItemData.filter((item) => item.checked)));
+      navigate('/order', {
+        state: {
+          items: cartItemData.filter((item) => item.checked),
+          userId,
+        },
+      });
+    } else {
+      dispatch(buyWithoutAccountAction(cartItemData.filter((item) => item.checked)));
+      navigate('/buyWithoutAccount', {
+        state: {
+          items: cartItemData.filter((item) => item.checked),
+        },
+      });
+    }
+
+    dispatch(clearCart());
+  };
+
   return (
-    <Stack justifyContent="center" alignItems="center">
+    <Stack justifyContent="center" alignItems="center" sx={{ width: '100%' }}>
       <Paper elevation={3} style={{ padding: 10, marginBottom: 8, marginTop: 60, width: '90%' }}>
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Grid item container pl={2}>
@@ -170,7 +185,7 @@ export default function CartDetail() {
           </Grid>
         </Stack>
       </Paper>
-      <Grid container justifyContent="space-around" alignItems="center">
+      <Grid container justifyContent="center" alignItems="center">
         {cartItemData.map((item, index) => (
           <Paper
             key={item.cartItemId}
@@ -260,8 +275,7 @@ export default function CartDetail() {
         justifyContent="space-around"
       >
         <Typography variant="body1" mt={1.5}>
-          Total payment:{' '}
-          <span style={{ fontWeight: 'bold' }}>${totalSelectedPrice.toLocaleString()}</span>
+          Total payment: <span style={{ fontWeight: 'bold' }}>${totalSelectedPrice.toLocaleString()}</span>
         </Typography>
         <Button
           variant="contained"
@@ -275,6 +289,7 @@ export default function CartDetail() {
               color: '#d6e5d8',
             },
           }}
+          onClick={handlePayment}
         >
           Payment
         </Button>

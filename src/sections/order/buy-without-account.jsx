@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import {
   Box,
@@ -31,6 +31,8 @@ const MenuProps = {
 
 export default function BuyWithoutAccount() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { items } = location.state || {};
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
@@ -60,6 +62,7 @@ export default function BuyWithoutAccount() {
         phoneNumber,
         email,
         shippingAddress,
+        items,
       },
     });
   };
