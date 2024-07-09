@@ -4,6 +4,7 @@ import { Box, Grid, Stack, Avatar, Button, CardHeader, Typography } from '@mui/m
 
 import LoadingPage from 'src/pages/loading_page';
 import ProfileServices from 'src/services/ProfileServices';
+import AddressServices from 'src/services/AddressServices';
 
 import AddressUser from '../address';
 import InformationBase from '../information-base';
@@ -11,6 +12,7 @@ import InformationBase from '../information-base';
 const InformationBaseView = () => {
   const userId = localStorage.getItem('uD');
   const [dataDetail, setDataDetail] = useState(null);
+  const [addressData, setAddressData] = useState(null);
   const [choiceData] = useState([
     { categoryId: 1, categoryName: 'Information' },
     { categoryId: 2, categoryName: 'Address' },
@@ -31,9 +33,22 @@ const InformationBaseView = () => {
       console.error(error);
     }
   };
+  const fetchAllAddressData = async () => {
+    try {
+      const response = await AddressServices.getData();
+      if (response?.data && response?.status === 200) {
+        setAddressData(response.data);
+      } else {
+        console.error(response ?? 'Unexpected response structure');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     fetchData();
+    fetchAllAddressData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
@@ -52,7 +67,7 @@ const InformationBaseView = () => {
     }
 
     if (selectedChange === 'Address') {
-      return <AddressUser initialValues={dataDetail} onLoadData={fetchData} />;
+      return <AddressUser initialValues={addressData} onLoadData={fetchAllAddressData} />;
     }
 
     return null;

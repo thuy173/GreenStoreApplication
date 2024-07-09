@@ -1,4 +1,4 @@
-import { getApi, postApi, deleteApi } from './agent';
+import { getApi, postApi, putApi2, deleteApi } from './agent';
 
 const AddressServices = {
   getData: async () => {
@@ -22,6 +22,15 @@ const AddressServices = {
   addData: async (payload) => {
     try {
       const result = await postApi(`address`, payload);
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  },
+  updateData: async (id, payload) => {
+    try {
+      const result = await putApi2(`address/${id}`, payload);
       return result;
     } catch (error) {
       console.log(error);

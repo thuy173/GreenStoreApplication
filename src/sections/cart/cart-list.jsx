@@ -142,26 +142,28 @@ export default function CartDetail() {
 
   return (
     <Stack justifyContent="center" alignItems="center">
-      <Paper elevation={3} style={{ padding: 10, marginBottom: 8, marginTop: 60 }}>
-        <Stack direction="row" spacing={21.2} alignItems="center" justifyContent="space-around">
+      <Paper elevation={3} style={{ padding: 10, marginBottom: 8, marginTop: 60, width: '90%' }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Grid item container pl={2}>
             <FormControlLabel control={<Checkbox />} label="" />
-            <Grid item mt={1}>
+            <Grid item mt={1} ml={4}>
               <Typography variant="body1">Product</Typography>
             </Grid>
           </Grid>
-          <Grid item pl={12}>
-            <Typography variant="body1">Price</Typography>
+          <Grid item container alignItems="center" spacing={12}>
+            <Grid item pl={12}>
+              <Typography variant="body1">Price</Typography>
+            </Grid>
+            <Grid item>
+              <Typography ml={2} variant="body1">
+                Quantity
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="body1">Amount</Typography>
+            </Grid>
           </Grid>
-          <Grid item>
-            <Typography ml={2} variant="body1">
-              Quantity
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="body1">Amount</Typography>
-          </Grid>
-          <Grid item>
+          <Grid item mr={2}>
             <Button variant="text" color="error">
               Action
             </Button>
@@ -170,9 +172,13 @@ export default function CartDetail() {
       </Paper>
       <Grid container justifyContent="space-around" alignItems="center">
         {cartItemData.map((item, index) => (
-          <Paper key={item.cartItemId} elevation={3} style={{ padding: 28, marginBottom: 8 }}>
-            <Stack direction="row" spacing={19.3} alignItems="center" justifyContent="space-around">
-              <Grid item container>
+          <Paper
+            key={item.cartItemId}
+            elevation={3}
+            style={{ padding: 28, marginBottom: 8, width: '90%' }}
+          >
+            <Stack direction="row" alignItems="center" justifyContent="space-between">
+              <Grid item container alignItems="center">
                 <FormControlLabel
                   control={
                     <Checkbox checked={item.checked} onChange={handleCheckboxChange(index)} />
@@ -191,34 +197,35 @@ export default function CartDetail() {
                   </Typography>
                 </Grid>
               </Grid>
-
-              <Grid item>
-                <Typography variant="body1" fontWeight="bold">
-                  ₫{item.price.toLocaleString()}
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Box display="flex" alignItems="center">
-                  <IconButton onClick={() => handleDecrement(index)} size="small">
-                    <Remove />
-                  </IconButton>
-                  <TextField
-                    value={item.quantity}
-                    size="small"
-                    inputProps={{ style: { textAlign: 'center', width: '22px' } }}
-                  />
-                  <IconButton onClick={() => handleIncrement(index)} size="small">
-                    <Add />
-                  </IconButton>
-                </Box>
-                <Typography ml={2} variant="body2" color="error">
-                  {item.quantityInStock} product left
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography variant="body1" fontWeight="bold">
-                  ₫{item.totalPrice.toLocaleString()}
-                </Typography>
+              <Grid item container alignItems="center" spacing={12}>
+                <Grid item>
+                  <Typography variant="body1" fontWeight="bold">
+                    ₫{item.price.toLocaleString()}
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Box display="flex" alignItems="center">
+                    <IconButton onClick={() => handleDecrement(index)} size="small">
+                      <Remove />
+                    </IconButton>
+                    <TextField
+                      value={item.quantity}
+                      size="small"
+                      inputProps={{ style: { textAlign: 'center', width: '22px' }, readOnly: true }}
+                    />
+                    <IconButton onClick={() => handleIncrement(index)} size="small">
+                      <Add />
+                    </IconButton>
+                  </Box>
+                  <Typography ml={2} variant="body2" color="error">
+                    {item.quantityInStock} product left
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Typography variant="body1" fontWeight="bold">
+                    ₫{item.totalPrice.toLocaleString()}
+                  </Typography>
+                </Grid>
               </Grid>
               <Grid item>
                 <Button

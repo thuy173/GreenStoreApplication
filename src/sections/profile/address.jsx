@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
@@ -20,12 +20,15 @@ import Label from 'src/components/label/label';
 import CustomSnackbar from 'src/components/snackbar/snackbar';
 
 import AddAddressNew from './view/add-address';
+import UpdateAddress from './view/update-address';
 // ----------------------------------------------------------------------
 
 export default function AddressUser({ initialValues, onLoadData }) {
-  const [addresses] = useState(initialValues.address || []);
+  const [addresses, setAddresses] = useState(initialValues || []);
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
   const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
+  const [dataDetail, setDataDetail] = useState({});
 
   const showAlert = (severity, message) => {
     setAlert({ severity, message, isOpen: true });
@@ -40,6 +43,14 @@ export default function AddressUser({ initialValues, onLoadData }) {
   };
   const handleCloseAdd = () => {
     setOpenAddDialog(false);
+  };
+
+  const handleOpenUpdate = (id) => {
+    setOpenUpdateDialog(true);
+    fetchData(id);
+  };
+  const handleCloseUpdate = () => {
+    setOpenUpdateDialog(false);
   };
 
   const handleDeleteAddress = async (addressId) => {
@@ -61,8 +72,35 @@ export default function AddressUser({ initialValues, onLoadData }) {
   };
 
   const handleSuccess = (severity, message) => {
-    setOpenAddDialog(false);
+    setOpenUpdateDialog(false);
     onLoadData();
+    setTimeout(() => {
+      setAlert({ isOpen: true, message, severity });
+    }, 200);
+  };
+
+  const fetchData = async (id) => {
+    try {
+      const response = await AddressServices.getDataById(id);
+      if (response?.data && response?.status === 200) {
+        setDataDetail(response.data);
+      } else {
+        console.error(response ?? 'Unexpected response structure');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleUpdateSuccess = (severity, message, updatedData) => {
+    setOpenUpdateDialog(false);
+    setAddresses((prevAddresses) =>
+      prevAddresses.map((addr) => (addr.addressId === updatedData.addressId ? updatedData : addr))
+    );
     setTimeout(() => {
       setAlert({ isOpen: true, message, severity });
     }, 200);
@@ -118,7 +156,7 @@ export default function AddressUser({ initialValues, onLoadData }) {
                       p: 0,
                     },
                   }}
-                  onClick={handleDeleteAddress}
+                  onClick={() => handleOpenUpdate(addressObj.addressId)}
                 >
                   Update
                 </Button>
@@ -164,6 +202,26 @@ export default function AddressUser({ initialValues, onLoadData }) {
           </DialogContent>
         </Dialog>
       )}
+      {openUpdateDialog && (
+        <Dialog open={openUpdateDialog} onClose={handleCloseUpdate} fullWidth maxWidth="md">
+          <DialogTitle>Update address</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseUpdate}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent>
+            <UpdateAddress addressObj={dataDetail} onSuccess={handleUpdateSuccess} />
+          </DialogContent>
+        </Dialog>
+      )}
       <CustomSnackbar
         open={alert.isOpen}
         onClose={handleCloseAlert}
@@ -176,15 +234,12 @@ export default function AddressUser({ initialValues, onLoadData }) {
 
 AddressUser.propTypes = {
   onLoadData: PropTypes.func,
-  initialValues: PropTypes.shape({
-    customerId: PropTypes.any,
-    address: PropTypes.arrayOf(
-      PropTypes.shape({
-        addressId: PropTypes.number,
-        address: PropTypes.string,
-        addressDetail: PropTypes.string,
-        isActive: PropTypes.bool,
-      })
-    ),
-  }).isRequired,
+  initialValues: PropTypes.arrayOf(
+    PropTypes.shape({
+      addressId: PropTypes.number,
+      address: PropTypes.string,
+      addressDetail: PropTypes.string,
+      isActive: PropTypes.bool,
+    })
+  ).isRequired,
 };

@@ -7,10 +7,12 @@ import {
   Stack,
   Button,
   Select,
+  Switch,
   MenuItem,
   TextField,
   InputLabel,
   FormControl,
+  FormControlLabel,
 } from '@mui/material';
 
 import AddressServices from 'src/services/AddressServices';
@@ -28,15 +30,16 @@ const MenuProps = {
   },
 };
 
-export default function AddAddressNew({ onSuccess }) {
+export default function UpdateAddress({ onSuccess, addressObj }) {
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
-  const [selectedProvince, setSelectedProvince] = useState('');
-  const [selectedDistrict, setSelectedDistrict] = useState('');
-  const [selectedWard, setSelectedWard] = useState('');
-  const [addressDetail, setAddressDetail] = useState('');
+  const [selectedProvince, setSelectedProvince] = useState(addressObj.province || '');
+  const [selectedDistrict, setSelectedDistrict] = useState(addressObj.district || '');
+  const [selectedWard, setSelectedWard] = useState(addressObj.ward || '');
+  const [addressDetail, setAddressDetail] = useState(addressObj.addressDetail || '');
+  const [isActive, setIsActive] = useState(addressObj.isActive || false);
 
   const showAlert = (severity, message) => {
     setAlert({ severity, message, isOpen: true });
@@ -134,18 +137,39 @@ export default function AddAddressNew({ onSuccess }) {
     }
   }, [selectedDistrict, fetchWards, districts]);
 
-  const handleAdd = async () => {
+  // Ensure districts are fetched based on initial province
+  useEffect(() => {
+    if (addressObj.province && provinces.length > 0) {
+      const province = provinces.find((p) => p.province_name === addressObj.province);
+      if (province) {
+        fetchDistricts(province.province_id);
+      }
+    }
+  }, [addressObj.province, fetchDistricts, provinces]);
+
+  // Ensure wards are fetched based on initial district
+  useEffect(() => {
+    if (addressObj.district && districts.length > 0) {
+      const district = districts.find((d) => d.district_name === addressObj.district);
+      if (district) {
+        fetchWards(district.district_id);
+      }
+    }
+  }, [addressObj.district, fetchWards, districts]);
+
+  const handleUpdate = async () => {
     const payload = {
       province: selectedProvince,
       district: selectedDistrict,
       ward: selectedWard,
       addressDetail,
-      isActive: false,
+      isActive,
     };
     try {
-      const response = await AddressServices.addData(payload);
+      const response = await AddressServices.updateData(addressObj.addressId, payload);
       if (response && response.status === 200) {
-        onSuccess('success', 'Address added successfully!');
+        const updatedData = { ...addressObj, ...payload };
+        onSuccess('success', 'Update address successfully!', updatedData);
       } else {
         showAlert(
           'error',
@@ -153,7 +177,7 @@ export default function AddAddressNew({ onSuccess }) {
         );
       }
     } catch (error) {
-      console.error('Failed to add address:', error);
+      console.error('Failed to update address:', error);
       showAlert('error', error.message || 'An error occurred!');
     }
   };
@@ -223,6 +247,19 @@ export default function AddAddressNew({ onSuccess }) {
           fullWidth
         />
       </Stack>
+      <Stack direction="row" justifyContent="center" alignItems="center" pt={3}>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isActive}
+              onChange={(e) => setIsActive(e.target.checked)}
+              name="isActive"
+              color="primary"
+            />
+          }
+          label="Is Active"
+        />
+      </Stack>
       <Grid item xs={6} mt={4}>
         <Button
           variant="contained"
@@ -236,10 +273,10 @@ export default function AddAddressNew({ onSuccess }) {
             },
           }}
           startIcon={<AddIcon />}
-          onClick={handleAdd}
+          onClick={handleUpdate}
           disabled={!selectedProvince || !selectedDistrict || !selectedWard}
         >
-          Add new address
+          Update address
         </Button>
       </Grid>
 
@@ -253,6 +290,14 @@ export default function AddAddressNew({ onSuccess }) {
   );
 }
 
-AddAddressNew.propTypes = {
+UpdateAddress.propTypes = {
   onSuccess: PropTypes.func,
+  addressObj: PropTypes.shape({
+    addressId: PropTypes.number,
+    province: PropTypes.string,
+    district: PropTypes.string,
+    ward: PropTypes.string,
+    addressDetail: PropTypes.string,
+    isActive: PropTypes.bool,
+  }).isRequired,
 };
