@@ -140,7 +140,6 @@ export default function AddAddressNew({ onSuccess }) {
       district: selectedDistrict,
       ward: selectedWard,
       addressDetail,
-      isActive: false,
     };
     try {
       const response = await AddressServices.addData(payload);
@@ -223,6 +222,7 @@ export default function AddAddressNew({ onSuccess }) {
           fullWidth
         />
       </Stack>
+
       <Grid item xs={6} mt={4}>
         <Button
           variant="contained"
