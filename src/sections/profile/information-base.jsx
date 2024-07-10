@@ -100,6 +100,9 @@ export default function InformationBase({ initialValues }) {
     try {
       const response = await ProfileServices.updateData(userId, updatedProfileData);
       if (response && response.status === 200) {
+        const newToken = response.data.token;
+
+        localStorage.setItem('accessToken', newToken);
         showAlert('success', 'Profile updated successfully!');
       } else {
         showAlert(
