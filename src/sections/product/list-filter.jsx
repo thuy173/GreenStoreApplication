@@ -151,14 +151,32 @@ export default function ProductListFilter({ productFilterData }) {
                     </Typography>
                   </Stack>
 
-                  <img
-                    src={
-                      items.productImages[0]?.imageUrl ||
-                      'https://res.cloudinary.com/dmmk9racr/image/upload/v1719892453/cat-1_q49n2j.png'
-                    }
-                    alt={items.productName}
-                    style={{ objectFit: 'cover', width: '50%', marginRight: 20, paddingTop: 10 }}
-                  />
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '168px',
+                      height: '168px',
+                      marginRight: 2,
+                      paddingTop: 1,
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      src={
+                        items.productImages[0]?.imageUrl ||
+                        'https://res.cloudinary.com/dmmk9racr/image/upload/v1719892453/cat-1_q49n2j.png'
+                      }
+                      alt={items.productName}
+                      sx={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                      }}
+                    />
+                  </Box>
                 </Stack>
               </Link>
               <Stack direction="column" justifyContent="center" alignItems="center" margin={3}>
