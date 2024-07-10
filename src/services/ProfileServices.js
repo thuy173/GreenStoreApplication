@@ -1,4 +1,4 @@
-import { getApi, putApi2 } from './agent';
+import { getApi, putApi, putApi2 } from './agent';
 
 const ProfileServices = {
   getData: async () => {
@@ -22,6 +22,15 @@ const ProfileServices = {
   updateData: async (id, payload) => {
     try {
       const result = await putApi2(`customer/${id}`, payload);
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  },
+  updateAvatar: async (id, payload) => {
+    try {
+      const result = await putApi(`customer/${id}/avatar`, payload);
       return result;
     } catch (error) {
       console.log(error);

@@ -87,7 +87,7 @@ const InformationBaseView = () => {
       <Grid item xs={12} sm={2.5}>
         <Stack sx={{ px: 3, py: 2, height: '100%' }}>
           <CardHeader
-            avatar={<Avatar src={dataDetail?.avatarUrl} alt={dataDetail?.fullName} />}
+            avatar={<Avatar src={dataDetail?.avatar} alt={dataDetail?.fullName} />}
             title={<Typography variant="h6">{dataDetail?.fullName}</Typography>}
           />
 
