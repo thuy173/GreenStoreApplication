@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
@@ -70,6 +70,25 @@ export default function AddressUser({ initialValues, onLoadData }) {
       showAlert('error', error.message || 'An error occurred!');
     }
   };
+  const handleActiveAddress = async (addressId) => {
+    try {
+      const userId = localStorage.getItem('uD');
+
+      const response = await AddressServices.active(userId, addressId, true);
+      if (response && response.status === 200) {
+        showAlert('success', 'Active address successfully!');
+        onLoadData();
+      } else {
+        showAlert(
+          'error',
+          response?.response?.data?.message || 'An error occurred. Please try again later!'
+        );
+      }
+    } catch (error) {
+      console.error('Failed to active address:', error);
+      showAlert('error', error.message || 'An error occurred!');
+    }
+  };
 
   const handleSuccess = (severity, message) => {
     setOpenUpdateDialog(false);
@@ -91,10 +110,6 @@ export default function AddressUser({ initialValues, onLoadData }) {
       console.error(error);
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const handleUpdateSuccess = (severity, message, updatedData) => {
     setOpenUpdateDialog(false);
@@ -175,6 +190,9 @@ export default function AddressUser({ initialValues, onLoadData }) {
                   onClick={() => handleDeleteAddress(addressObj.addressId)}
                 >
                   Delete
+                </Button>
+                <Button onClick={() => handleActiveAddress(addressObj.addressId)}>
+                  Set active
                 </Button>
               </Stack>
             </Stack>

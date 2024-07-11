@@ -37,6 +37,15 @@ const AddressServices = {
     }
     return null;
   },
+  active: async (customerId, addressId, active, payload) => {
+    try {
+      const result = await putApi2(`address/${customerId}/${addressId}/active?isActive=${active}`, payload);
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  },
   deleteData: async (id) => {
     try {
       const result = await deleteApi(`address/${id}`);
