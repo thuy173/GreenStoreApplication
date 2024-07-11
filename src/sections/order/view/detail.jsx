@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+import CloseIcon from '@mui/icons-material/Close';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import {
@@ -9,25 +10,43 @@ import {
   Tabs,
   Stack,
   Button,
+  Dialog,
   Divider,
   Tooltip,
   Container,
   Typography,
   IconButton,
   CardContent,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
 } from '@mui/material';
 
 import OrderServices from 'src/services/OrderServices';
+
+import CustomSnackbar from 'src/components/snackbar/snackbar';
 
 import OrderTracking from './tracking';
 
 const PurchaseOrder = () => {
   const [openOrderTracking, setOpenOrderTracking] = useState(false);
+  const [openChangeStatus, setOpenChangeStatus] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [orderData, setOrderData] = useState([]);
   const [value, setValue] = useState(0);
   const [expandedOrders, setExpandedOrders] = useState([]);
+  const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
 
   const tabs = ['All', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Canceled', 'Returned'];
+
+  const showAlert = (severity, message) => {
+    setAlert({ severity, message, isOpen: true });
+  };
+
+  const handleCloseAlert = () => {
+    setAlert({ message: null, severity: 'success', isOpen: false });
+  };
 
   const tabStyles = {
     active: {
@@ -44,11 +63,21 @@ const PurchaseOrder = () => {
     setOpenOrderTracking(true);
   };
 
+  const handleOpenChangeStatus = (orderId) => {
+    setOpenChangeStatus(true);
+    setSelectedOrderId(orderId);
+  };
+
+  const handleCloseChangeStatus = () => {
+    setOpenChangeStatus(false);
+    setSelectedOrderId(null);
+  };
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const fetchProductData = async () => {
+  const fetchOrderData = async () => {
     try {
       const response = await OrderServices.getData();
       if (response?.data && response?.status === 200) {
@@ -62,7 +91,7 @@ const PurchaseOrder = () => {
   };
 
   useEffect(() => {
-    fetchProductData();
+    fetchOrderData();
   }, []);
 
   const filterOrders = (orders, status) => {
@@ -76,6 +105,30 @@ const PurchaseOrder = () => {
     setExpandedOrders((prev) =>
       prev.includes(orderId) ? prev.filter((id) => id !== orderId) : [...prev, orderId]
     );
+  };
+
+  const handleCancelOrder = async (orderId) => {
+    try {
+      const response = await OrderServices.changeStatus(orderId, 'CANCELED');
+
+      if (response && response.status === 200) {
+        showAlert('success', 'Canceled order successfully!');
+        fetchOrderData();
+      } else {
+        setAlert({
+          message: response?.response?.data?.message || 'An error occurred. Please check again!',
+          severity: 'error',
+          isOpen: true,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to update status:', error);
+      setAlert({
+        message: error.message || 'An error occurred.',
+        severity: 'error',
+        isOpen: true,
+      });
+    }
   };
 
   return (
@@ -106,7 +159,7 @@ const PurchaseOrder = () => {
               >
                 <Grid container spacing={2}>
                   <Grid item xs={12} md={8}>
-                    <CardContent>
+                    <CardContent onClick={handleOpenOrderTracking}>
                       <Box display="flex" alignItems="center" mb={1}>
                         <img
                           src={order.orderItems[0].productImages[0].imageUrl}
@@ -201,7 +254,9 @@ const PurchaseOrder = () => {
                 )}
                 {order.orderItems.length > 1 && (
                   <Stack justifyContent="center" alignItems="center">
-                    <Tooltip title={expandedOrders.includes(order.orderId) ? "See less" : "See more"}>
+                    <Tooltip
+                      title={expandedOrders.includes(order.orderId) ? 'See less' : 'See more'}
+                    >
                       <IconButton onClick={() => toggleExpandOrder(order.orderId)}>
                         {expandedOrders.includes(order.orderId) ? (
                           <KeyboardDoubleArrowUpIcon />
@@ -219,7 +274,11 @@ const PurchaseOrder = () => {
                   </Typography>
                   <Box display="flex">
                     {(order.status === 'PENDING' || order.status === 'PROCESSING') && (
-                      <Button variant="contained" color="error" onClick={handleOpenOrderTracking}>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => handleOpenChangeStatus(order.orderId)}
+                      >
                         Cancel order
                       </Button>
                     )}
@@ -228,6 +287,45 @@ const PurchaseOrder = () => {
               </Box>
             ))}
           </Box>
+          <Dialog
+            open={openChangeStatus}
+            onClose={handleCloseChangeStatus}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">Cancel Order</DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={handleCloseChangeStatus}
+              sx={{
+                position: 'absolute',
+                right: 2,
+                top: 2,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Are you sure you want to cancel this order?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseChangeStatus} color="primary">
+                No
+              </Button>
+              <Button onClick={() => handleCancelOrder(selectedOrderId)} color="primary" autoFocus>
+                Yes
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <CustomSnackbar
+            open={alert.isOpen}
+            onClose={handleCloseAlert}
+            message={alert.message}
+            severity={alert.severity}
+          />
         </Container>
       ) : (
         <OrderTracking />

@@ -37,6 +37,17 @@ const OrderServices = {
     }
     return null;
   },
+
+  changeStatus: async (id, status) => {
+    try {
+      const result = await putApi2(`order/${id}/status?status=${status}`, '');
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  },
+  
   deleteData: async (id) => {
     try {
       const result = await deleteApi(`order/${id}`);
