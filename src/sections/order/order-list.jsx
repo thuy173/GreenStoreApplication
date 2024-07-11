@@ -87,7 +87,7 @@ export default function OrderList({
         setOpenDialog(true);
         setTimeout(() => {
           navigate('/profile?choice=Purchase%20Order');
-        }, 3000);
+        }, 2000);
       } else {
         showAlert(
           'error',
