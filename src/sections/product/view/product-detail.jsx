@@ -1,10 +1,9 @@
 import Cookies from 'js-cookie';
 import Slider from 'react-slick';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 
 import { Add, Remove } from '@mui/icons-material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -76,10 +75,13 @@ function SamplePrevArrow(props) {
 }
 
 const ProductDetail = ({ initialValues }) => {
-  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(initialValues.productImages[0].imageUrl);
   const [quantity, setQuantity] = useState(1);
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
+  const [cartItemCount, setCartItemCount] = useState(() => {
+    const storedCount = parseInt(localStorage.getItem('cartItemCount'), 10);
+    return !Number.isNaN(storedCount) ? storedCount : 0;
+  });
 
   const showAlert = (severity, message) => {
     setAlert({ severity, message, isOpen: true });
@@ -133,6 +135,10 @@ const ProductDetail = ({ initialValues }) => {
 
   const userId = localStorage.getItem('uD');
 
+  useEffect(() => {
+    localStorage.setItem('cartItemCount', cartItemCount);
+  }, [cartItemCount]);
+
   const handleAddCart = async (quantityItem) => {
     const customerIdOrUuid = userId || getCartUuid();
 
@@ -148,8 +154,8 @@ const ProductDetail = ({ initialValues }) => {
     try {
       const response = await CartServices.addToCart(customerIdOrUuid, credentials);
       if (response && response.status === 200) {
-        showAlert('success', 'Add to cart success');
-        navigate('/cart');
+        showAlert('success', 'Add product to cart success.');
+        setCartItemCount((prevCount) => prevCount + 1);
       } else {
         setAlert({
           message:
