@@ -3,7 +3,7 @@ import { getApi, postApi, putApi2, deleteApi } from './agent';
 const OrderServices = {
   getData: async () => {
     try {
-      const result = await getApi(`order`, '');
+      const result = await getApi(`order/myOrders`, '');
       return result;
     } catch (error) {
       console.log(error);

@@ -119,6 +119,7 @@ export function overrides(theme) {
       styleOverrides: {
         tooltip: {
           backgroundColor: '#f5fcf4',
+          color: '#3b413a',
         },
         arrow: {
           color: '#3b413a',
