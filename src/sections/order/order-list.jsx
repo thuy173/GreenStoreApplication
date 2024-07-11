@@ -64,6 +64,7 @@ export default function OrderList({
       customerId: dataDetail?.customerId || null,
       discount: 0,
       totalAmount: totalPayment,
+      orderDate: new Date().toISOString(),
       shippingAddress: getActiveAddress() || shippingAddress,
       latitude: 0,
       longitude: 0,
