@@ -84,8 +84,8 @@ ColorlibStepIcon.propTypes = {
   icon: PropTypes.node,
 };
 
-const OrderSteps = ({ steps }) => (
-  <Stepper alternativeLabel activeStep={1} connector={<ColorlibConnector />}>
+const OrderSteps = ({ steps, activeStep }) => (
+  <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
     {steps.map((step, index) => (
       <Step key={index}>
         <StepLabel StepIconComponent={ColorlibStepIcon}>
@@ -108,6 +108,7 @@ OrderSteps.propTypes = {
       date: PropTypes.string,
     })
   ).isRequired,
+  activeStep: PropTypes.number.isRequired,
 };
 
 export default OrderSteps;

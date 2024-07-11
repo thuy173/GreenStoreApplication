@@ -24,11 +24,11 @@ import OrderSteps from 'src/components/stepper/order-step';
 import CustomSnackbar from 'src/components/snackbar/snackbar';
 import CancelOrderDialog from 'src/components/dialog/cancel-order-dialog';
 
-const steps = [
-  { label: 'Pending', date: '10:51 07-07-2024' },
-  { label: 'Processing', date: '10:52 07-07-2024' },
-  { label: 'Shipped', date: '15:22 08-07-2024' },
-  { label: 'Delivered' },
+const initialSteps = [
+  { label: 'PENDING', date: '10:51 07-07-2024' },
+  { label: 'PROCESSING', date: '10:52 07-07-2024' },
+  { label: 'SHIPPED', date: '15:22 08-07-2024' },
+  { label: 'DELIVERED' },
 ];
 
 const OrderTracking = () => {
@@ -103,6 +103,9 @@ const OrderTracking = () => {
     navigate('/profile?choice=Purchase%20Order');
   };
 
+  const getStepIndex = (status) => initialSteps.findIndex(step => step.label === status);
+
+
   return (
     <Container>
       <Box sx={{ p: 2, backgroundColor: '#ffffff', marginTop: 2 }}>
@@ -116,7 +119,7 @@ const OrderTracking = () => {
         </Stack>
 
         <Divider sx={{ mb: 7, mt: 1.5 }} />
-        <OrderSteps steps={steps} />
+        <OrderSteps steps={initialSteps} activeStep={getStepIndex(dataDetail?.status)} />
       </Box>
       <Box sx={{ backgroundColor: '#fff', p: 2, pt: 10 }}>
         <Grid container spacing={2} pb={5}>
@@ -133,7 +136,7 @@ const OrderTracking = () => {
           <Grid item xs={12} md={7} ml={5}>
             <Box sx={{ maxWidth: 400 }}>
               <Stepper orientation="vertical">
-                {steps.map((step, index) => (
+                {initialSteps.map((step, index) => (
                   <Step key={step.label}>
                     <StepLabel
                       optional={
