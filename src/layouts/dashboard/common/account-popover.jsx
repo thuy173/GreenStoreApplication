@@ -92,9 +92,11 @@ export default function AccountPopover() {
   };
 
   useEffect(() => {
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
+    if (isLoggedIn && userId) {
+      fetchData();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoggedIn, userId]);
 
   return (
     <>

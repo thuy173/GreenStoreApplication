@@ -1,6 +1,4 @@
-import { jwtDecode } from "jwt-decode";
-
-import { LOGOUT } from "src/redux/actions/actionTypes";
+import { jwtDecode } from 'jwt-decode';
 
 const isTokenExpired = (token) => {
   try {
@@ -13,11 +11,13 @@ const isTokenExpired = (token) => {
 
 const tokenExpirationMiddleware = (store) => (next) => (action) => {
   const { accessToken } = store.getState().auth;
-  
+
   if (accessToken && isTokenExpired(accessToken)) {
-    store.dispatch({ type: LOGOUT });
+    if (action.type !== 'LOGOUT') {
+      store.dispatch({ type: 'LOGOUT' });
+    }
   }
-  
+
   return next(action);
 };
 
