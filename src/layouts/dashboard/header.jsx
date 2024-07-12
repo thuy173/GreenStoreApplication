@@ -128,6 +128,7 @@ Header.propTypes = {
 };
 function NavItem({ item }) {
   const pathname = usePathname();
+  const active = item.path === pathname;
 
   const [openMenu, setOpenMenu] = useState(false);
   const handleClick = () => setOpenMenu(!openMenu);
@@ -145,6 +146,22 @@ function NavItem({ item }) {
           color: '#3b413a',
           textTransform: 'capitalize',
           fontWeight: 'fontWeightMedium',
+          ...(active && {
+            color: '#3b7c4d',
+            fontWeight: 'fontWeightSemiBold',
+            bgcolor: 'transparent',
+            '&:hover': {
+              backgroundColor: 'transparent',
+            },
+          }),
+          ...(!active && {
+            fontWeight: 'fontWeightSemiBold',
+            bgcolor: 'transparent',
+            '&:hover': {
+              bgcolor: 'transparent',
+              color: '#3b7c4d',
+            },
+          }),
         }}
       >
         <Box component="span">{item.title}</Box>

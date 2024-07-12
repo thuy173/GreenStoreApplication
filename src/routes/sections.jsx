@@ -14,6 +14,7 @@ export const ProfilePage = lazy(() => import('../pages/Profile/main'));
 export const OrderPage = lazy(() => import('../pages/OrderPage/main'));
 export const BuyWithoutAccountPage = lazy(() => import('../pages/OrderPage/buyWithoutAccount'));
 export const OrderTrackingPage = lazy(() => import('../pages/OrderPage/tracking'));
+export const BlogPage = lazy(() => import('../pages/BlogPage/main'));
 
 // ----------------------------------------------------------------------
 
@@ -36,6 +37,7 @@ export default function Router() {
         { path: 'order', element: <OrderPage /> },
         { path: 'buyWithoutAccount', element: <BuyWithoutAccountPage /> },
         { path: 'tracking/:id', element: <OrderTrackingPage /> },
+        { path: 'blog', element: <BlogPage /> },
       ],
     },
     {

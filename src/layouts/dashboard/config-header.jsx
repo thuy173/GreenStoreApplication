@@ -14,7 +14,7 @@ const headerConfig = [
   },
   {
     title: 'blog',
-    path: '/product',
+    path: '/blog',
   },
 ];
 
