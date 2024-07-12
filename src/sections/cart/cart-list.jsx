@@ -74,8 +74,11 @@ export default function CartDetail() {
   };
 
   const handleChangeQuantity = async (quantity, cartItemId) => {
+    const cartUuid = getCartUuid();
+    const id = localStorage.getItem('uD') || cartUuid;
+
     try {
-      const response = await CartServices.updateQuantity(cartData.customerId, cartItemId, quantity);
+      const response = await CartServices.updateQuantity(id, cartItemId, quantity);
       if (response && response.status === 200) {
         fetchCartData();
       } else {

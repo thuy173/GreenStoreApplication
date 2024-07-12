@@ -1,5 +1,4 @@
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 
 import { Box, Card, Grid, Stack, Button, Typography, CardContent } from '@mui/material';
@@ -13,9 +12,12 @@ import CustomSnackbar from 'src/components/snackbar/snackbar';
 // ----------------------------------------------------------------------
 
 export default function ProductList() {
-  const navigate = useNavigate();
   const [productData, setProductData] = useState([]);
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
+  const [cartItemCount, setCartItemCount] = useState(() => {
+    const storedCount = parseInt(localStorage.getItem('cartItemCount'), 10);
+    return !Number.isNaN(storedCount) ? storedCount : 0;
+  });
 
   const showAlert = (severity, message) => {
     setAlert({ severity, message, isOpen: true });
@@ -30,6 +32,10 @@ export default function ProductList() {
   };
 
   const userId = localStorage.getItem('uD');
+
+  useEffect(() => {
+    localStorage.setItem('cartItemCount', cartItemCount);
+  }, [cartItemCount]);
 
   const fetchProductData = async () => {
     try {
@@ -59,7 +65,8 @@ export default function ProductList() {
     try {
       const response = await CartServices.addToCart(customerIdOrUuid, credentials);
       if (response && response.status === 200) {
-        navigate('/cart');
+        showAlert('success', 'Add product to cart success.');
+        setCartItemCount((prevCount) => prevCount + 1);
       } else {
         setAlert({
           message:
