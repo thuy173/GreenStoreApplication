@@ -172,10 +172,15 @@ const ListBlog = () => {
 
   useEffect(() => {
     const add = localStorage.getItem('addPost') === 'true';
+    const update = localStorage.getItem('updatePost') === 'true';
 
     if (add) {
       showAlert('success', 'Post has been created successfully. Wait for approval!');
       localStorage.removeItem('addPost');
+    }
+    if (update) {
+      showAlert('success', 'Post has been updated successfully. Wait for approval!');
+      localStorage.removeItem('updatePost');
     }
   }, []);
 

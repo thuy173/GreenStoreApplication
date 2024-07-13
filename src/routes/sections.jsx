@@ -17,6 +17,7 @@ export const OrderTrackingPage = lazy(() => import('../pages/OrderPage/tracking'
 export const BlogPage = lazy(() => import('../pages/BlogPage/main'));
 export const DetailBlogPage = lazy(() => import('../pages/BlogPage/detail'));
 export const CreateBlogPage = lazy(() => import('../pages/BlogPage/create'));
+export const UpdateBlogPage = lazy(() => import('../pages/BlogPage/update'));
 
 // ----------------------------------------------------------------------
 
@@ -42,6 +43,7 @@ export default function Router() {
         { path: 'blog', element: <BlogPage /> },
         { path: 'blog/:id', element: <DetailBlogPage /> },
         { path: 'blog/create', element: <CreateBlogPage /> },
+        { path: 'blog/update/:id', element: <UpdateBlogPage /> },
       ],
     },
     {
