@@ -1,4 +1,4 @@
-import { getApi, postApi, putApi2 } from './agent';
+import { getApi, putApi2, postApi2 } from './agent';
 
 const BlogServices = {
   getData: async () => {
@@ -21,7 +21,7 @@ const BlogServices = {
   },
   addData: async (payload) => {
     try {
-      const result = await postApi(`blog`, payload);
+      const result = await postApi2(`blog`, payload);
       return result;
     } catch (error) {
       console.log(error);

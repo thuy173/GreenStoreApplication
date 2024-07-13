@@ -1,8 +1,17 @@
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-import { Box, Card, Grid, CardMedia, Typography, CardContent, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  Card,
+  Grid,
+  Button,
+  CardMedia,
+  Typography,
+  CardContent,
+  useMediaQuery,
+} from '@mui/material';
 
 import BlogServices from 'src/services/BlogServices';
 
@@ -126,6 +135,7 @@ ArticlesList.propTypes = {
 };
 
 const ListBlog = () => {
+  const navigate = useNavigate();
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
   const [blogData, setBlogData] = useState([]);
 
@@ -150,8 +160,13 @@ const ListBlog = () => {
     fetchProductData();
   }, []);
 
+  const handleOpenCreate = () => {
+    navigate('/blog/create');
+  };
+
   return (
     <Box sx={{ px: 12, pt: 1 }}>
+      <Button onClick={handleOpenCreate}>Create blog</Button>
       <ArticlesList blogData={blogData} />
       <CustomSnackbar
         open={alert.isOpen}
