@@ -11,10 +11,18 @@ const isTokenExpired = (token) => {
 
 const tokenExpirationMiddleware = (store) => (next) => (action) => {
   const { accessToken } = store.getState().auth;
+  console.log('Middleware action:', action);// Debug
+  console.log('Current state:', store.getState());// Debug
 
-  if (accessToken && isTokenExpired(accessToken)) {
-    if (action.type !== 'LOGOUT') {
-      store.dispatch({ type: 'LOGOUT' });
+  if (accessToken) {
+    console.log('Token:', accessToken); // Debug
+    const expired = isTokenExpired(accessToken);
+    console.log('Is token expired?', expired); // Debug
+    if (expired) {
+      console.log('Token expired, dispatching LOGOUT'); // Debug
+      if (action.type !== 'LOGOUT') {
+        store.dispatch({ type: 'LOGOUT' });
+      }
     }
   }
 

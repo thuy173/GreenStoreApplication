@@ -1,5 +1,3 @@
-import { jwtDecode } from 'jwt-decode';
-
 import { getLocalStorage } from '../../services/agent';
 import {
   LOGOUT,
@@ -9,32 +7,15 @@ import {
   REGISTER_FAILURE,
 } from '../actions/actionTypes';
 
-const accessToken = getLocalStorage('accessToken') !== null ? getLocalStorage('accessToken') : null;
+const accessToken = getLocalStorage('accessToken');
 
 const initialState = accessToken
   ? { isLoggedIn: true, accessToken }
   : { isLoggedIn: false, accessToken: null };
 
-const isTokenExpired = (token) => {
-  try {
-    const { exp } = jwtDecode(token);
-    return exp < Date.now() / 1000;
-  } catch (e) {
-    return true;
-  }
-};
-
 const authReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
-  if (state.accessToken && isTokenExpired(state.accessToken)) {
-    return {
-      ...state,
-      isLoggedIn: false,
-      accessToken: null,
-    };
-  }
-  
   switch (type) {
     case LOGIN_SUCCESS:
       return {
@@ -59,6 +40,8 @@ const authReducer = (state = initialState, action) => {
         isLoggedIn: false,
       };
     case LOGOUT:
+      localStorage.clear();
+      console.log('Token expired, CLEAR');
       return {
         ...state,
         isLoggedIn: false,
