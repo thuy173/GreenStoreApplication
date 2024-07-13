@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 import InfoIcon from '@mui/icons-material/Info';
 import HomeIcon from '@mui/icons-material/Home';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Box, Grid, Stack, Avatar, Button, CardHeader, Typography } from '@mui/material';
 
@@ -11,6 +12,7 @@ import AddressServices from 'src/services/AddressServices';
 
 import PurchaseOrder from 'src/sections/order/view/detail';
 
+import MyPost from './my-post';
 import AddressUser from '../address';
 import InformationBase from '../information-base';
 
@@ -22,6 +24,7 @@ const InformationBaseView = () => {
     { categoryId: 1, categoryName: 'Information', icon: <InfoIcon /> },
     { categoryId: 2, categoryName: 'Address', icon: <HomeIcon /> },
     { categoryId: 3, categoryName: 'Purchase Order', icon: <ShoppingCartIcon /> },
+    { categoryId: 4, categoryName: 'My post', icon: <LibraryBooksIcon /> },
   ]);
   const [selectedChange, setSelectedChange] = useState(
     localStorage.getItem('choice') || 'Information'
@@ -77,6 +80,9 @@ const InformationBaseView = () => {
     }
     if (selectedChange === 'Purchase Order') {
       return <PurchaseOrder />;
+    }
+    if (selectedChange === 'My post') {
+      return <MyPost />;
     }
 
     return null;

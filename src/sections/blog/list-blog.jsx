@@ -99,7 +99,7 @@ const ArticleCard = ({ article, isLargeScreen }) => (
 
 ArticleCard.propTypes = {
   article: PropTypes.shape({
-    blogId: PropTypes.string,
+    blogId: PropTypes.number,
     title: PropTypes.string,
     description: PropTypes.string,
     thumbnail: PropTypes.string,

@@ -19,6 +19,15 @@ const BlogServices = {
     }
     return null;
   },
+  getDataByCustomerId: async (id) => {
+    try {
+      const result = await getApi(`blog/getAllByUser/${id}`, '');
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  },
   addData: async (payload) => {
     try {
       const result = await postApi2(`blog`, payload);
