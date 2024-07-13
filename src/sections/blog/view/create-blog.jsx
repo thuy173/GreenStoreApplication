@@ -2,17 +2,21 @@
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import ReactQuill from 'react-quill';
+import styled from 'styled-components';
 import React, { useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import {
   Grid,
   Stack,
   Button,
   Backdrop,
   TextField,
+  Typography,
   FormControl,
+  Breadcrumbs,
   OutlinedInput,
   CircularProgress,
 } from '@mui/material';
@@ -53,6 +57,11 @@ const formats = [
   'image',
   'video',
 ];
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+`;
 
 const CreateBlog = () => {
   const navigate = useNavigate();
@@ -119,8 +128,29 @@ const CreateBlog = () => {
   return (
     <form onSubmit={formik.handleSubmit}>
       <Stack>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={9} ml={4}>
+        <Grid item xs={12} md={9} ml={4}>
+          <Breadcrumbs
+            ml={0.5}
+            separator={<NavigateNextIcon fontSize="large" />}
+            aria-label="breadcrumb"
+          >
+            <StyledLink to="/blog">
+              <Stack direction="row" alignItems="center">
+                <Typography sx={{ color: '#596269' }} variant="body1">
+                  Blog
+                </Typography>
+              </Stack>
+            </StyledLink>
+            <Typography variant="body1" color="text.primary">
+              Create post
+            </Typography>
+          </Breadcrumbs>
+          <Typography variant="h3" color="#377c49">
+            Create new post
+          </Typography>
+        </Grid>
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={9} ml={3}>
             <Stack direction="row">
               <FormControl sx={{ my: 2 }} variant="outlined" fullWidth>
                 <OutlinedInput
@@ -148,9 +178,10 @@ const CreateBlog = () => {
               formats={formats}
               value={content}
               onChange={setContent}
+              style={{ minHeight: '400px' }}
             />
           </Grid>
-          <Grid item xs={12} md={2.5} sx={{ my: 2 }}>
+          <Grid item xs={12} md={2.5} ml={1} sx={{ my: 2 }}>
             <Stack direction="row">
               <FormControl fullWidth>
                 <DropZone

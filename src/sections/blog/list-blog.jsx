@@ -2,10 +2,12 @@ import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
   Card,
   Grid,
+  Stack,
   Button,
   CardMedia,
   Typography,
@@ -32,7 +34,7 @@ const ArticleCard = ({ article, isLargeScreen }) => (
   >
     <Grid container direction="row" justifyContent="center" alignItems="stretch">
       {!isLargeScreen && (
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <CardMedia
             component="img"
             sx={{ height: '100%', objectFit: 'cover' }}
@@ -43,7 +45,7 @@ const ArticleCard = ({ article, isLargeScreen }) => (
       )}
       <Grid
         item
-        xs={9}
+        xs={8}
         sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
       >
         <CardContent>
@@ -82,7 +84,7 @@ const ArticleCard = ({ article, isLargeScreen }) => (
         </CardContent>
       </Grid>
       {isLargeScreen && (
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <CardMedia
             component="img"
             sx={{ height: '100%', objectFit: 'cover' }}
@@ -143,6 +145,10 @@ const ListBlog = () => {
     setAlert({ message: null, severity: 'success', isOpen: false });
   };
 
+  const showAlert = (severity, message) => {
+    setAlert({ severity, message, isOpen: true });
+  };
+
   const fetchProductData = async () => {
     try {
       const response = await BlogServices.getData();
@@ -164,9 +170,38 @@ const ListBlog = () => {
     navigate('/blog/create');
   };
 
+  useEffect(() => {
+    const add = localStorage.getItem('addPost') === 'true';
+
+    if (add) {
+      showAlert('success', 'Post has been created successfully. Wait for approval!');
+      localStorage.removeItem('addPost');
+    }
+  }, []);
+
   return (
     <Box sx={{ px: 12, pt: 1 }}>
-      <Button onClick={handleOpenCreate}>Create blog</Button>
+      <Stack direction="row" justifyContent="end" alignItems="center">
+        <Button
+          variant="outlined"
+          startIcon={<AddIcon />}
+          sx={{
+            marginTop: 4,
+            bgcolor: '#507c5c',
+            borderColor: '#507c5c',
+            color: '#d6e5d8',
+            '&:hover': {
+              backgroundColor: '#26643b',
+              color: '#fff',
+              borderColor: '#507c5c',
+            },
+          }}
+          onClick={handleOpenCreate}
+        >
+          Create post
+        </Button>
+      </Stack>
+
       <ArticlesList blogData={blogData} />
       <CustomSnackbar
         open={alert.isOpen}
