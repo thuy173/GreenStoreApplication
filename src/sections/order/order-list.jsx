@@ -85,6 +85,12 @@ export default function OrderList({
       if (response && response.status === 200) {
         dispatch(clearCart());
         setOpenDialog(true);
+
+        const orderItemCount = items.length;
+        let cartItemCount = parseInt(localStorage.getItem('cartItemCount') || '0', 10);
+        cartItemCount -= orderItemCount;
+        localStorage.setItem('cartItemCount', Math.max(cartItemCount, 0).toString());
+
         setTimeout(() => {
           navigate('/profile?choice=Purchase%20Order');
         }, 2000);
