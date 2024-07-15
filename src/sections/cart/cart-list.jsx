@@ -4,13 +4,29 @@ import { useMemo, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Add, Remove } from '@mui/icons-material';
-import { Box, Grid, Stack, Paper, Button, Checkbox, TextField, Typography, IconButton, FormControlLabel } from '@mui/material';
+import {
+  Box,
+  Grid,
+  Stack,
+  Paper,
+  Button,
+  Checkbox,
+  TextField,
+  Typography,
+  IconButton,
+  FormControlLabel,
+} from '@mui/material';
 
 import CartServices from 'src/services/CartServices';
-import { clearCart, updateCart, paymentAction, fetchCartSuccess, buyWithoutAccountAction } from 'src/redux/actions/cartAction';
+import {
+  clearCart,
+  updateCart,
+  paymentAction,
+  fetchCartSuccess,
+  buyWithoutAccountAction,
+} from 'src/redux/actions/cartAction';
 
 import CustomSnackbar from 'src/components/snackbar/snackbar';
-
 
 export default function CartDetail() {
   const dispatch = useDispatch();
@@ -23,6 +39,10 @@ export default function CartDetail() {
 
   const handleCloseAlert = () => {
     setAlert({ message: null, severity: 'success', isOpen: false });
+  };
+
+  const showAlert = (severity, message) => {
+    setAlert({ severity, message, isOpen: true });
   };
 
   const handleIncrement = async (index) => {
@@ -83,7 +103,8 @@ export default function CartDetail() {
         fetchCartData();
       } else {
         setAlert({
-          message: response?.response?.data?.message || 'An error occurred. Please try again later!',
+          message:
+            response?.response?.data?.message || 'An error occurred. Please try again later!',
           severity: 'error',
           isOpen: true,
         });
@@ -105,7 +126,8 @@ export default function CartDetail() {
         fetchCartData();
       } else {
         setAlert({
-          message: response?.response?.data?.message || 'An error occurred. Please try again later!',
+          message:
+            response?.response?.data?.message || 'An error occurred. Please try again later!',
           severity: 'error',
           isOpen: true,
         });
@@ -137,20 +159,27 @@ export default function CartDetail() {
   );
 
   const handlePayment = () => {
+    const checkedItems = cartItemData.filter((item) => item.checked);
+
+    if (checkedItems.length === 0) {
+      showAlert('error', 'No items selected.');
+      return;
+    }
+
     if (isLoggedIn) {
       const userId = localStorage.getItem('uD');
-      dispatch(paymentAction(userId, cartItemData.filter((item) => item.checked)));
+      dispatch(paymentAction(userId, checkedItems));
       navigate('/order', {
         state: {
-          items: cartItemData.filter((item) => item.checked),
+          items: checkedItems,
           userId,
         },
       });
     } else {
-      dispatch(buyWithoutAccountAction(cartItemData.filter((item) => item.checked)));
+      dispatch(buyWithoutAccountAction(checkedItems));
       navigate('/buyWithoutAccount', {
         state: {
-          items: cartItemData.filter((item) => item.checked),
+          items: checkedItems,
         },
       });
     }
@@ -278,7 +307,8 @@ export default function CartDetail() {
         justifyContent="space-around"
       >
         <Typography variant="body1" mt={1.5}>
-          Total payment: <span style={{ fontWeight: 'bold' }}>${totalSelectedPrice.toLocaleString()}</span>
+          Total payment:{' '}
+          <span style={{ fontWeight: 'bold' }}>${totalSelectedPrice.toLocaleString()}</span>
         </Typography>
         <Button
           variant="contained"
