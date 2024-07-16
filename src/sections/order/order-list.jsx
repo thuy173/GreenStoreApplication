@@ -43,6 +43,7 @@ export default function OrderList({
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
   const [selectedTab, setSelectedTab] = useState(0);
+  const [orderId, setOrderId] = useState();
 
   const handleChangeTab = (event, newValue) => {
     setSelectedTab(newValue);
@@ -51,10 +52,6 @@ export default function OrderList({
 
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
-  };
-
-  const handleOpenCheckOut = () => {
-    setCheckoutOpen(true);
   };
 
   const handleCloseCheckOut = () => {
@@ -118,16 +115,22 @@ export default function OrderList({
       const response = await OrderServices.addData(payload);
       if (response && response.status === 200) {
         dispatch(clearCart());
-        setOpenDialog(true);
 
         const orderItemCount = items.length;
         let cartItemCount = parseInt(localStorage.getItem('cartItemCount') || '0', 10);
         cartItemCount -= orderItemCount;
         localStorage.setItem('cartItemCount', Math.max(cartItemCount, 0).toString());
 
-        setTimeout(() => {
-          navigate('/profile?choice=Purchase%20Order');
-        }, 2000);
+        setOrderId(response.data.orderId);
+        if (selectedTab === 1) {
+          setOpenDialog(true);
+          setTimeout(() => {
+            navigate('/profile?choice=Purchase%20Order');
+          }, 2000);
+        } else {
+          setCheckoutOpen(true);
+          setOpenDialog(false);
+        }
       } else {
         showAlert(
           'error',
@@ -142,15 +145,10 @@ export default function OrderList({
 
   const handlePayment = () => {
     if (paymentMethod === 'cash') {
-      handleOrder();
+      handleOrder('cash');
     } else if (paymentMethod === 'stripe') {
-      handleOpenCheckOut();
+      handleOrder('stripe');
     }
-  };
-
-  const handlePaymentSuccess = () => {
-    handleCloseCheckOut();
-    handleOrder();
   };
 
   return (
@@ -304,11 +302,7 @@ export default function OrderList({
       />
       {openDialog && <OrderSuccessDialog open={openDialog} onClose={() => setOpenDialog(false)} />}
       {checkoutOpen && (
-        <PaymentHandler
-          open={checkoutOpen}
-          onClose={handleCloseCheckOut}
-          onPaymentSuccess={handlePaymentSuccess}
-        />
+        <PaymentHandler open={checkoutOpen} onClose={handleCloseCheckOut} orderId={orderId} />
       )}
     </Container>
   );

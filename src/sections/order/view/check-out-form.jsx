@@ -10,6 +10,7 @@ import { Dialog, DialogContent } from '@mui/material';
 import PaymentServices from 'src/services/PaymentServices';
 
 import CustomSnackbar from 'src/components/snackbar/snackbar';
+import OrderSuccessDialog from 'src/components/dialog/order-success-dialog';
 
 const stripePromise = loadStripe(
   'pk_test_51PcjBSDqid2qJKjuZYhKs3NWehNhq6Rlh000wl0y5uqtPIGzm1TfAI3vpu9kiTDKpU6tYdcPwvtjWruXM0gzGmF300BP5dsOuy'
@@ -50,11 +51,10 @@ const StyledForm = styled.form`
   }
 `;
 
-const CheckoutForm = ({ handlePayment }) => {
+const CheckoutForm = ({ handlePayment, orderId }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState(null);
-  const [amount, setAmount] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -65,7 +65,7 @@ const CheckoutForm = ({ handlePayment }) => {
 
     const cardElement = elements.getElement(CardElement);
 
-    const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
+    const { error: stripeError } = await stripe.createPaymentMethod({
       type: 'card',
       card: cardElement,
     });
@@ -75,19 +75,12 @@ const CheckoutForm = ({ handlePayment }) => {
       setError(stripeError.message);
     } else {
       setError(null);
-      handlePayment(paymentMethod, amount);
+      handlePayment(orderId);
     }
   };
 
   return (
     <StyledForm onSubmit={handleSubmit}>
-      <input
-        type="number"
-        placeholder="Amount"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        required
-      />
       <CardElement className="StripeElement" />
       {error && <p>{error}</p>}
       <button type="submit" disabled={!stripe}>
@@ -98,11 +91,13 @@ const CheckoutForm = ({ handlePayment }) => {
 };
 
 CheckoutForm.propTypes = {
-  handlePayment: PropTypes.func.isRequired,
+  handlePayment: PropTypes.func,
+  orderId: PropTypes.number,
 };
 
-const PaymentHandler = ({ open, onClose, onPaymentSuccess }) => {
+const PaymentHandler = ({ open, onClose, orderId }) => {
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
+  const [openDialog, setOpenDialog] = useState(false);
   const showAlert = (severity, message) => {
     setAlert({ severity, message, isOpen: true });
   };
@@ -111,20 +106,14 @@ const PaymentHandler = ({ open, onClose, onPaymentSuccess }) => {
     setAlert({ message: null, severity: 'success', isOpen: false });
   };
 
-  const handlePayment = async (paymentMethod, amount) => {
-    const paymentData = {
-      orderId: 6,
-      amount: parseInt(amount, 10),
-      currency: 'usd',
-      status: 'pending',
-      paymentIntentId: paymentMethod.id,
-    };
+  const handlePayment = async () => {
     try {
-      const response = await PaymentServices.addData(paymentData);
+      const response = await PaymentServices.changeStatus(orderId);
 
       if (response && response.status === 200) {
         showAlert('success', 'Payment successful!');
-        onPaymentSuccess();
+        onClose();
+        setOpenDialog(true);
       } else {
         showAlert('error', 'Payment failed!');
       }
@@ -132,7 +121,6 @@ const PaymentHandler = ({ open, onClose, onPaymentSuccess }) => {
       showAlert('error', 'Error processing payment:', error);
     }
   };
-  
 
   return (
     <>
@@ -151,7 +139,7 @@ const PaymentHandler = ({ open, onClose, onPaymentSuccess }) => {
       >
         <DialogContent>
           <Elements stripe={stripePromise}>
-            <CheckoutForm handlePayment={handlePayment} />
+            <CheckoutForm handlePayment={handlePayment} orderId={orderId} />
           </Elements>
         </DialogContent>
       </Dialog>
@@ -161,6 +149,7 @@ const PaymentHandler = ({ open, onClose, onPaymentSuccess }) => {
         message={alert.message}
         severity={alert.severity}
       />
+      {openDialog && <OrderSuccessDialog open={openDialog} onClose={() => setOpenDialog(false)} />}
     </>
   );
 };
@@ -168,7 +157,7 @@ const PaymentHandler = ({ open, onClose, onPaymentSuccess }) => {
 PaymentHandler.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
-  onPaymentSuccess: PropTypes.func,
+  orderId: PropTypes.number,
 };
 
 export default PaymentHandler;
