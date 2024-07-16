@@ -5,7 +5,11 @@ import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, useStripe, CardElement, useElements } from '@stripe/react-stripe-js';
 
+import { Dialog, DialogContent } from '@mui/material';
+
 import PaymentServices from 'src/services/PaymentServices';
+
+import CustomSnackbar from 'src/components/snackbar/snackbar';
 
 const stripePromise = loadStripe(
   'pk_test_51PcjBSDqid2qJKjuZYhKs3NWehNhq6Rlh000wl0y5uqtPIGzm1TfAI3vpu9kiTDKpU6tYdcPwvtjWruXM0gzGmF300BP5dsOuy'
@@ -97,10 +101,19 @@ CheckoutForm.propTypes = {
   handlePayment: PropTypes.func.isRequired,
 };
 
-const PaymentHandler = () => {
+const PaymentHandler = ({ open, onClose, onPaymentSuccess }) => {
+  const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
+  const showAlert = (severity, message) => {
+    setAlert({ severity, message, isOpen: true });
+  };
+
+  const handleCloseAlert = () => {
+    setAlert({ message: null, severity: 'success', isOpen: false });
+  };
+
   const handlePayment = async (paymentMethod, amount) => {
     const paymentData = {
-      paymentMethod: paymentMethod.id,
+      orderId: 6,
       amount: parseInt(amount, 10),
       currency: 'usd',
       status: 'pending',
@@ -109,21 +122,53 @@ const PaymentHandler = () => {
     try {
       const response = await PaymentServices.addData(paymentData);
 
-      if (response.ok) {
-        console.log('Payment successful!');
+      if (response && response.status === 200) {
+        showAlert('success', 'Payment successful!');
+        onPaymentSuccess();
       } else {
-        console.error('Payment failed!');
+        showAlert('error', 'Payment failed!');
       }
     } catch (error) {
-      console.error('Error processing payment:', error);
+      showAlert('error', 'Error processing payment:', error);
     }
   };
+  
 
   return (
-    <Elements stripe={stripePromise}>
-      <CheckoutForm handlePayment={handlePayment} />
-    </Elements>
+    <>
+      <Dialog
+        open={open}
+        onClose={onClose}
+        PaperProps={{
+          sx: {
+            overflow: 'visible',
+            paddingTop: '84px',
+            borderRadius: '25px',
+          },
+        }}
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogContent>
+          <Elements stripe={stripePromise}>
+            <CheckoutForm handlePayment={handlePayment} />
+          </Elements>
+        </DialogContent>
+      </Dialog>
+      <CustomSnackbar
+        open={alert.isOpen}
+        onClose={handleCloseAlert}
+        message={alert.message}
+        severity={alert.severity}
+      />
+    </>
   );
+};
+
+PaymentHandler.propTypes = {
+  open: PropTypes.bool,
+  onClose: PropTypes.func,
+  onPaymentSuccess: PropTypes.func,
 };
 
 export default PaymentHandler;

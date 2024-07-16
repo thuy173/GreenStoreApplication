@@ -7,14 +7,14 @@ import {
   Box,
   Grid,
   Stack,
+  Radio,
   Button,
-  Dialog,
   Divider,
   TextField,
   Container,
   Typography,
-  DialogContent,
-  DialogActions,
+  RadioGroup,
+  FormControlLabel,
 } from '@mui/material';
 
 import OrderServices from 'src/services/OrderServices';
@@ -22,6 +22,9 @@ import { clearCart } from 'src/redux/actions/cartAction';
 
 import Iconify from 'src/components/iconify/iconify';
 import CustomSnackbar from 'src/components/snackbar/snackbar';
+import OrderSuccessDialog from 'src/components/dialog/order-success-dialog';
+
+import PaymentHandler from './view/check-out-form';
 
 // ----------------------------------------------------------------------
 
@@ -37,6 +40,26 @@ export default function OrderList({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [selectedTab, setSelectedTab] = useState(0);
+
+  const handleChangeTab = (event, newValue) => {
+    setSelectedTab(newValue);
+    setPaymentMethod(newValue === 1 ? 'cash' : '');
+  };
+
+  const handlePaymentMethodChange = (event) => {
+    setPaymentMethod(event.target.value);
+  };
+
+  const handleOpenCheckOut = () => {
+    setCheckoutOpen(true);
+  };
+
+  const handleCloseCheckOut = () => {
+    setCheckoutOpen(false);
+  };
 
   const handleCloseAlert = () => {
     setAlert({ message: null, severity: 'success', isOpen: false });
@@ -60,12 +83,23 @@ export default function OrderList({
   const totalPayment = totalOrderAmount + shippingFee;
 
   const handleOrder = async () => {
+    const activeAddress = getActiveAddress();
+    const finalShippingAddress = activeAddress || shippingAddress;
+
+    if (!finalShippingAddress) {
+      showAlert('error', 'Shipping address is required to place an order.');
+      return;
+    }
+
+    const paymentMethodSend = selectedTab === 1 ? 'cod' : 'stripe';
+
     const payload = {
       customerId: dataDetail?.customerId || null,
       discount: 0,
       totalAmount: totalPayment,
       orderDate: new Date().toISOString(),
-      shippingAddress: getActiveAddress() || shippingAddress,
+      shippingAddress: finalShippingAddress,
+      paymentMethod: paymentMethodSend,
       latitude: 0,
       longitude: 0,
       orderItems: items.map((item) => ({
@@ -104,6 +138,19 @@ export default function OrderList({
       console.error('Failed to add order:', error);
       showAlert('error', error.message || 'An error occurred!');
     }
+  };
+
+  const handlePayment = () => {
+    if (paymentMethod === 'cash') {
+      handleOrder();
+    } else if (paymentMethod === 'stripe') {
+      handleOpenCheckOut();
+    }
+  };
+
+  const handlePaymentSuccess = () => {
+    handleCloseCheckOut();
+    handleOrder();
   };
 
   return (
@@ -152,41 +199,81 @@ export default function OrderList({
                 </Grid>
                 <Grid item>
                   <Typography variant="body2">
-                    Amount: ₫{item.totalPrice.toLocaleString()}
+                    Amount: ${item.totalPrice.toLocaleString()}
                   </Typography>
                 </Grid>
               </Grid>
               <Divider sx={{ my: 2 }} />
             </Grid>
           ))}
-          <Box sx={{ mt: 2 }}>
-            <TextField fullWidth label="Lưu ý cho Người bán..." variant="outlined" />
+          <Box sx={{ mt: 2, ml: 2 }}>
+            <TextField size="small" fullWidth label="Note to the store..." variant="outlined" />
           </Box>
         </Grid>
       </Box>
       <Box sx={{ mt: 2, p: 2, borderRadius: '4px', backgroundColor: '#ffffff' }}>
-        <Grid container justifyContent="space-between">
-          <Grid item>
-            <Typography variant="body2">Đơn vị vận chuyển: Nhanh</Typography>
-            <Typography variant="body2">Đảm bảo nhận hàng từ 10 Tháng 7 - 11 Tháng 7</Typography>
-          </Grid>
-          <Grid item>
-            <Button variant="outlined">Thay Đổi</Button>
+        <Grid container justifyContent="start">
+          <Grid item ml={3}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Payment methods
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-around' }} mb={3}>
+              <Button
+                variant={selectedTab === 0 ? 'contained' : 'outlined'}
+                sx={{
+                  borderRadius: 0,
+                  borderColor: selectedTab === 0 ? '#26643b' : '#507c5c',
+                  color: selectedTab === 0 ? 'white' : '#507c5c',
+                  backgroundColor: selectedTab === 0 ? '#26643b' : 'transparent',
+                  '&:hover': {
+                    backgroundColor: selectedTab === 0 ? '#26643b' : '#26643b',
+                    color: selectedTab === 0 ? 'white' : '#d6e5d8',
+                    borderColor: selectedTab === 0 ? '#26643b' : '#507c5c',
+                  },
+                }}
+                onClick={() => handleChangeTab(null, 0)}
+              >
+                Bank card
+              </Button>
+              <Button
+                value="cash"
+                variant={selectedTab === 1 ? 'contained' : 'outlined'}
+                sx={{
+                  ml: 2,
+                  borderRadius: 0,
+                  borderColor: selectedTab === 1 ? '#26643b' : '#507c5c',
+                  color: selectedTab === 1 ? 'white' : '#507c5c',
+                  backgroundColor: selectedTab === 1 ? '#26643b' : 'transparent',
+                  '&:hover': {
+                    backgroundColor: selectedTab === 1 ? '#26643b' : '#26643b',
+                    color: selectedTab === 1 ? 'white' : '#d6e5d8',
+                    borderColor: selectedTab === 1 ? '#26643b' : '#507c5c',
+                  },
+                }}
+                onClick={() => handleChangeTab(null, 1)}
+              >
+                Cash on Delivery
+              </Button>
+            </Box>
+
+            {selectedTab === 0 && (
+              <RadioGroup value={paymentMethod} onChange={handlePaymentMethodChange}>
+                <FormControlLabel value="stripe" control={<Radio />} label="Stripe" />
+              </RadioGroup>
+            )}
           </Grid>
         </Grid>
-        <Typography variant="body2">
-          Hoặc chọn phương thức Hỏa Tốc để Đảm bảo nhận hàng vào hôm nay
-        </Typography>
+
         <Divider sx={{ my: 2 }} />
         <Stack direction="column" justifyContent="center" alignItems="end" spacing={3}>
           <Typography variant="body1" align="right">
-            Tổng tiền hàng: ${totalOrderAmount.toLocaleString()}
+            Total value of goods: ${totalOrderAmount.toLocaleString()}
           </Typography>
           <Typography variant="body1" align="right">
-            Phí vận chuyển: ${shippingFee}
+            Transport fee: ${shippingFee}
           </Typography>
           <Typography variant="h6" align="right">
-            Tổng thanh toán:{' '}
+            Total payment:{' '}
             <span style={{ color: '#507c5c' }}>${totalPayment.toLocaleString()}</span>
           </Typography>
         </Stack>
@@ -203,9 +290,9 @@ export default function OrderList({
                 borderColor: '#507c5c',
               },
             }}
-            onClick={handleOrder}
+            onClick={handlePayment}
           >
-            Payment
+            Order
           </Button>
         </Grid>
       </Box>
@@ -215,75 +302,14 @@ export default function OrderList({
         message={alert.message}
         severity={alert.severity}
       />
-      <Dialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        PaperProps={{
-          sx: {
-            overflow: 'visible',
-            paddingTop: '84px',
-            borderRadius: '25px',
-          },
-        }}
-      >
-        {' '}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '-75px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '155px',
-            height: '155px',
-            marginRight: 2,
-            paddingTop: 1,
-            backgroundColor: '#E0F7FA',
-            borderRadius: '50%',
-            zIndex: 1,
-          }}
-        >
-          <Box
-            component="img"
-            src="/assets/images/main/verified.png"
-            alt="success"
-            sx={{
-              width: '85%',
-              height: '85%',
-              objectFit: 'contain',
-            }}
-          />
-        </Box>
-        <DialogContent sx={{ textAlign: 'center', padding: '10px 15px', position: 'relative' }}>
-          <Stack direction="column" justifyContent="center" alignItems="center">
-            <Typography variant="h3">Success!</Typography>
-            <Typography variant="body1" mt={1}>
-              Everything is OK, continue to the next step
-            </Typography>
-          </Stack>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center', mt: 2 }}>
-          <Button
-            onClick={() => setOpenDialog(false)}
-            variant="contained"
-            sx={{
-              backgroundColor: '#4FC3F7',
-              color: '#fff',
-              borderRadius: '30px',
-              px: 10,
-              py: 1.2,
-              m: 2,
-              '&:hover': {
-                backgroundColor: '#1eb4eb',
-              },
-            }}
-          >
-            Continue
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {openDialog && <OrderSuccessDialog open={openDialog} onClose={() => setOpenDialog(false)} />}
+      {checkoutOpen && (
+        <PaymentHandler
+          open={checkoutOpen}
+          onClose={handleCloseCheckOut}
+          onPaymentSuccess={handlePaymentSuccess}
+        />
+      )}
     </Container>
   );
 }

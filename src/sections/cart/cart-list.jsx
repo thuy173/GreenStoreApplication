@@ -247,7 +247,7 @@ export default function CartDetail() {
               <Grid item container alignItems="center" spacing={12}>
                 <Grid item>
                   <Typography variant="body1" fontWeight="bold">
-                    ₫{item.price.toLocaleString()}
+                    ${item.price.toLocaleString()}
                   </Typography>
                 </Grid>
                 <Grid item>
@@ -270,7 +270,7 @@ export default function CartDetail() {
                 </Grid>
                 <Grid item>
                   <Typography variant="body1" fontWeight="bold">
-                    ₫{item.totalPrice.toLocaleString()}
+                    ${item.totalPrice.toLocaleString()}
                   </Typography>
                 </Grid>
               </Grid>
