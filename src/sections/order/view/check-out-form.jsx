@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
+import { useNavigate } from 'react-router-dom';
 import { Elements, useStripe, CardElement, useElements } from '@stripe/react-stripe-js';
 
 import { Dialog, DialogContent } from '@mui/material';
@@ -98,6 +99,8 @@ CheckoutForm.propTypes = {
 const PaymentHandler = ({ open, onClose, orderId }) => {
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
   const [openDialog, setOpenDialog] = useState(false);
+  const navigate = useNavigate();
+
   const showAlert = (severity, message) => {
     setAlert({ severity, message, isOpen: true });
   };
@@ -112,8 +115,10 @@ const PaymentHandler = ({ open, onClose, orderId }) => {
 
       if (response && response.status === 200) {
         showAlert('success', 'Payment successful!');
-        onClose();
         setOpenDialog(true);
+        setTimeout(() => {
+          navigate('/profile?choice=Purchase%20Order');
+        }, 2000);
       } else {
         showAlert('error', 'Payment failed!');
       }

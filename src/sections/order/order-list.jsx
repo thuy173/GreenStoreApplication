@@ -24,6 +24,7 @@ import Iconify from 'src/components/iconify/iconify';
 import CustomSnackbar from 'src/components/snackbar/snackbar';
 import OrderSuccessDialog from 'src/components/dialog/order-success-dialog';
 
+import VoucherDialog from './view/voucher-dialog';
 import PaymentHandler from './view/check-out-form';
 
 // ----------------------------------------------------------------------
@@ -44,6 +45,8 @@ export default function OrderList({
   const [paymentMethod, setPaymentMethod] = useState('');
   const [selectedTab, setSelectedTab] = useState(0);
   const [orderId, setOrderId] = useState();
+  const [openVoucherDialog, setOpenVoucherDialog] = useState(false);
+  const [voucher, setVoucher] = useState({ voucherId: null, discount: 0 });
 
   const handleChangeTab = (event, newValue) => {
     setSelectedTab(newValue);
@@ -52,6 +55,10 @@ export default function OrderList({
 
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
+  };
+
+  const handleVoucherSelect = ({ voucherId, discount }) => {
+    setVoucher({ voucherId, discount });
   };
 
   const handleCloseCheckOut = () => {
@@ -97,6 +104,7 @@ export default function OrderList({
       orderDate: new Date().toISOString(),
       shippingAddress: finalShippingAddress,
       paymentMethod: paymentMethodSend,
+      voucherId: voucher.voucherId,
       latitude: 0,
       longitude: 0,
       orderItems: items.map((item) => ({
@@ -210,6 +218,49 @@ export default function OrderList({
         </Grid>
       </Box>
       <Box sx={{ mt: 2, p: 2, borderRadius: '4px', backgroundColor: '#ffffff' }}>
+        <Grid container justifyContent="end" alignItems="center">
+          {voucher.discount !== 0 && (
+            <Button
+              variant="text"
+              sx={{
+                borderRadius: 0,
+                color: 'red',
+                bgcolor: 'transparent',
+                border: '1px solid red',
+                '&:hover': {
+                  backgroundColor: 'transparent',
+                  color: '#26643b',
+                },
+              }}
+            >
+              -{' '}{voucher.discount}%
+            </Button>
+          )}
+          <Button
+            variant="text"
+            sx={{
+              borderRadius: 0,
+              color: '#26643b',
+              backgroundColor: 'transparent',
+              '&:hover': {
+                backgroundColor: 'transparent',
+                color: '#26643b',
+              },
+            }}
+            onClick={() => setOpenVoucherDialog(true)}
+          >
+            Choice voucher
+          </Button>
+          {openVoucherDialog && (
+            <VoucherDialog
+              open={openVoucherDialog}
+              onClose={() => setOpenVoucherDialog(false)}
+              totalOrderAmount={totalOrderAmount}
+              onVoucherSelect={handleVoucherSelect}
+            />
+          )}
+        </Grid>
+        <Divider sx={{ my: 2 }} />
         <Grid container justifyContent="start">
           <Grid item ml={3}>
             <Typography variant="h6" sx={{ mb: 2 }}>
