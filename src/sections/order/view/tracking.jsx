@@ -184,7 +184,7 @@ const OrderTracking = () => {
             >
               <Box textAlign="right" mb={1}>
                 <Typography variant="body2" sx={{ textDecoration: 'line-through' }}>
-                  ₫{item.price}
+                  ${item.price}
                 </Typography>
                 <Typography variant="h6" color="error">
                   ${item.price}

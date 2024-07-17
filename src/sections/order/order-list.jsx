@@ -83,8 +83,10 @@ export default function OrderList({
 
   const fullAddress = getActiveAddress() || shippingAddress;
   const totalOrderAmount = items.reduce((acc, item) => acc + item.totalPrice, 0);
+  const discountAmount = totalOrderAmount * (voucher.discount / 100);
+  const discountedTotalOrderAmount = totalOrderAmount - discountAmount;
   const shippingFee = 12;
-  const totalPayment = totalOrderAmount + shippingFee;
+  const totalPayment = discountedTotalOrderAmount + shippingFee;
 
   const handleOrder = async () => {
     const activeAddress = getActiveAddress();
@@ -233,7 +235,7 @@ export default function OrderList({
                 },
               }}
             >
-              -{' '}{voucher.discount}%
+              - {voucher.discount}%
             </Button>
           )}
           <Button
@@ -315,8 +317,13 @@ export default function OrderList({
 
         <Divider sx={{ my: 2 }} />
         <Stack direction="column" justifyContent="center" alignItems="end" spacing={3}>
+          {voucher.discount !== 0 && (
+            <Typography variant="body1" align="right" sx={{ textDecoration: 'line-through' }}>
+              ${totalOrderAmount.toLocaleString()}
+            </Typography>
+          )}
           <Typography variant="body1" align="right">
-            Total value of goods: ${totalOrderAmount.toLocaleString()}
+            Total value of goods: ${discountedTotalOrderAmount.toLocaleString()}
           </Typography>
           <Typography variant="body1" align="right">
             Transport fee: ${shippingFee}
