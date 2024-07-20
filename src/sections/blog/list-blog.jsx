@@ -15,9 +15,12 @@ import {
   useMediaQuery,
 } from '@mui/material';
 
+import { fDateTime } from 'src/utils/format-time';
+
 import BlogServices from 'src/services/BlogServices';
 
 import CustomSnackbar from 'src/components/snackbar/snackbar';
+
 
 const ArticleCard = ({ article, isLargeScreen }) => (
   <Card
@@ -79,7 +82,7 @@ const ArticleCard = ({ article, isLargeScreen }) => (
             {article.description}
           </Typography>
           <Typography variant="caption" color="textSecondary" component="div">
-            {article.createAt}
+            {fDateTime(article.createAt)}
           </Typography>
         </CardContent>
       </Grid>
