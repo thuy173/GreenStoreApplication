@@ -23,6 +23,8 @@ import OrderServices from 'src/services/OrderServices';
 import CustomSnackbar from 'src/components/snackbar/snackbar';
 import CancelOrderDialog from 'src/components/dialog/cancel-order-dialog';
 
+import EvaluationDialog from './evaluation-form';
+
 const PurchaseOrder = () => {
   const navigate = useNavigate();
   const [openChangeStatus, setOpenChangeStatus] = useState(false);
@@ -31,6 +33,9 @@ const PurchaseOrder = () => {
   const [value, setValue] = useState(0);
   const [expandedOrders, setExpandedOrders] = useState([]);
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
+  const [openEvaluationDialog, setOpenEvaluationDialog] = useState(false);
+  const [evaluationOrderId, setEvaluationOrderId] = useState(null);
+  const [evaluationProductIds, setEvaluationProductIds] = useState([]);
 
   const tabs = ['All', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Canceled', 'Returned'];
 
@@ -40,6 +45,18 @@ const PurchaseOrder = () => {
 
   const handleCloseAlert = () => {
     setAlert({ message: null, severity: 'success', isOpen: false });
+  };
+
+  const handleOpenEvaluationDialog = (orderId, productIds) => {
+    setEvaluationOrderId(orderId);
+    setEvaluationProductIds(productIds);
+    setOpenEvaluationDialog(true);
+  };
+
+  const handleCloseEvaluationDialog = () => {
+    setOpenEvaluationDialog(false);
+    setEvaluationOrderId(null);
+    setEvaluationProductIds([]);
   };
 
   const tabStyles = {
@@ -294,6 +311,40 @@ const PurchaseOrder = () => {
                     Cancel order
                   </Button>
                 )}
+                {order.status === 'DELIVERED' && (
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() =>
+                      handleOpenEvaluationDialog(
+                        order.orderId,
+                        order.orderItems.map((item) => item.productId)
+                      )
+                    }
+                  >
+                    Evaluation order
+                  </Button>
+                )}
+                {order.status === 'REVIEWED' && (
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() =>
+                      handleOpenEvaluationDialog(
+                        order.orderId,
+                        order.orderItems.map((item) => item.productId)
+                      )
+                    }
+                  >
+                    next
+                  </Button>
+                )}
+                <EvaluationDialog
+                  open={openEvaluationDialog}
+                  onClose={handleCloseEvaluationDialog}
+                  orderId={evaluationOrderId}
+                  productIds={evaluationProductIds}
+                />
               </Box>
             </Box>
           </Box>

@@ -28,6 +28,15 @@ const OrderServices = {
     }
     return null;
   },
+  evaluationOrder: async (payload) => {
+    try {
+      const result = await postApi(`evaluation`, payload);
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  },
   updateData: async (id, payload) => {
     try {
       const result = await putApi2(`order/${id}`, payload);
