@@ -37,7 +37,16 @@ const PurchaseOrder = () => {
   const [evaluationOrderId, setEvaluationOrderId] = useState(null);
   const [evaluationProductIds, setEvaluationProductIds] = useState([]);
 
-  const tabs = ['All', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Canceled', 'Returned'];
+  const tabs = [
+    'All',
+    'Pending',
+    'Processing',
+    'Shipped',
+    'Delivered',
+    'Reviewed',
+    'Canceled',
+    'Returned',
+  ];
 
   const showAlert = (severity, message) => {
     setAlert({ severity, message, isOpen: true });
@@ -141,6 +150,10 @@ const PurchaseOrder = () => {
         isOpen: true,
       });
     }
+  };
+
+  const handleListProduct = () => {
+    navigate('/product');
   };
 
   return (
@@ -314,7 +327,7 @@ const PurchaseOrder = () => {
                 {order.status === 'DELIVERED' && (
                   <Button
                     variant="contained"
-                    color="error"
+                    color="success"
                     onClick={() =>
                       handleOpenEvaluationDialog(
                         order.orderId,
@@ -322,21 +335,12 @@ const PurchaseOrder = () => {
                       )
                     }
                   >
-                    Evaluation order
+                    Product Reviews
                   </Button>
                 )}
                 {order.status === 'REVIEWED' && (
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() =>
-                      handleOpenEvaluationDialog(
-                        order.orderId,
-                        order.orderItems.map((item) => item.productId)
-                      )
-                    }
-                  >
-                    next
+                  <Button variant="contained" color="warning" onClick={handleListProduct}>
+                    Continue shopping
                   </Button>
                 )}
                 <EvaluationDialog
@@ -344,6 +348,7 @@ const PurchaseOrder = () => {
                   onClose={handleCloseEvaluationDialog}
                   orderId={evaluationOrderId}
                   productIds={evaluationProductIds}
+                  onLoad={fetchOrderData}
                 />
               </Box>
             </Box>

@@ -23,7 +23,7 @@ import ProductServices from 'src/services/ProductServices';
 
 import CustomSnackbar from 'src/components/snackbar/snackbar';
 
-const EvaluationDialog = ({ open, onClose, orderId, productIds }) => {
+const EvaluationDialog = ({onLoad, open, onClose, orderId, productIds }) => {
   const customerId = localStorage.getItem('uD');
   const [ratings, setRatings] = useState({});
   const [comments, setComments] = useState({});
@@ -106,6 +106,7 @@ const EvaluationDialog = ({ open, onClose, orderId, productIds }) => {
       const response = await OrderServices.evaluationOrder(requestData);
 
       if (response.status !== 200) {
+        onLoad();
         setAlert({
           message: response?.response?.data?.message || 'An error occurred. Please check again!',
           severity: 'error',
@@ -129,7 +130,7 @@ const EvaluationDialog = ({ open, onClose, orderId, productIds }) => {
   return (
     <>
       <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-        <DialogTitle>Đánh Giá Sản Phẩm</DialogTitle>
+        <DialogTitle>Product Reviews</DialogTitle>
         <IconButton
           aria-label="close"
           onClick={onClose}
@@ -168,12 +169,12 @@ const EvaluationDialog = ({ open, onClose, orderId, productIds }) => {
                   value={ratings[product.productId] || 5}
                   onChange={(event, newValue) => handleRatingChange(product.productId, newValue)}
                 />
-                <Typography ml={2}>{ratings[product.productId] === 5 ? 'Tuyệt vời' : ''}</Typography>
+                <Typography ml={2}>{ratings[product.productId] === 5 ? 'Great' : ''}</Typography>
               </Grid>
 
               <TextField
                 margin="dense"
-                placeholder="Hãy chia sẻ những điều bạn thích về sản phẩm này với những người mua khác nhé."
+                placeholder="Please share what you like about this product with other buyers."
                 fullWidth
                 multiline
                 rows={4}
@@ -187,7 +188,7 @@ const EvaluationDialog = ({ open, onClose, orderId, productIds }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleAdd} color="primary" variant="contained">
-            Hoàn Thành
+            Complete
           </Button>
         </DialogActions>
       </Dialog>
@@ -203,6 +204,7 @@ const EvaluationDialog = ({ open, onClose, orderId, productIds }) => {
 
 EvaluationDialog.propTypes = {
   open: PropTypes.bool.isRequired,
+  onLoad: PropTypes.func,
   onClose: PropTypes.func.isRequired,
   orderId: PropTypes.number.isRequired,
   productIds: PropTypes.arrayOf(PropTypes.number).isRequired,
