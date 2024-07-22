@@ -28,6 +28,15 @@ const ProductServices = {
     }
     return null;
   },
+  searchByName: async (name) => {
+    try {
+      const result = await getApi(`product/searchByName?name=${name}`, '');
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  },
 };
 
 export default ProductServices;

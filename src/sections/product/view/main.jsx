@@ -46,6 +46,7 @@ export default function ProductMain() {
     localStorage.getItem('selectedCategory') || 'all'
   );
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const fetchCategoryData = async () => {
     try {
@@ -91,6 +92,20 @@ export default function ProductMain() {
     }
   };
 
+  const fetchProductsByName = async (name) => {
+    try {
+      const response = await ProductServices.searchByName(name);
+
+      if (response?.data && response?.status === 200) {
+        setFilteredProducts(response.data);
+      } else {
+        console.error(response ?? 'Unexpected response structure');
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
   useEffect(() => {
     fetchCategoryData();
   }, []);
@@ -105,6 +120,12 @@ export default function ProductMain() {
       const maxPrice = calculateValue(newValue);
       fetchProductsByPrice(0, maxPrice);
     }
+  };
+
+  const handleSearchChange = (event) => {
+    const searchValue = event.target.value;
+    setSearchTerm(searchValue);
+    fetchProductsByName(searchValue);
   };
 
   const maxPrice = calculateValue(value);
@@ -168,6 +189,8 @@ export default function ProductMain() {
               size="small"
               placeholder="Search..."
               fullWidth
+              value={searchTerm}
+              onChange={handleSearchChange}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
