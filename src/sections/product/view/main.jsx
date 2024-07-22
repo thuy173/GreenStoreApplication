@@ -15,11 +15,11 @@ import {
   FormControlLabel,
 } from '@mui/material';
 
+import ProductServices from 'src/services/ProductServices';
 import CategoryServices from 'src/services/CategoryServices';
 
 import ProductList from '../list-view';
 import ProductListFilter from '../list-filter';
-// ----------------------------------------------------------------------
 
 function valueLabelFormat(value) {
   const units = ['$'];
@@ -38,10 +38,6 @@ function calculateValue(value) {
   return 10 + value;
 }
 
-function filterProducts(products, maxPrice) {
-  return products.filter((product) => product.price <= maxPrice);
-}
-
 export default function ProductMain() {
   const [value, setValue] = useState(10);
   const [categoryData, setCategoryData] = useState([]);
@@ -49,8 +45,9 @@ export default function ProductMain() {
   const [selectedCategory, setSelectedCategory] = useState(
     localStorage.getItem('selectedCategory') || 'all'
   );
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
-  const fetchProductData = async () => {
+  const fetchCategoryData = async () => {
     try {
       const response = await CategoryServices.getData();
       if (response?.data && response?.status === 200) {
@@ -64,10 +61,28 @@ export default function ProductMain() {
   };
 
   const fetchProductFilterData = async (categoryId) => {
+    if (categoryId === 'all') {
+      return;
+    }
     try {
       const response = await CategoryServices.getDataById(categoryId);
       if (response?.data && response?.status === 200) {
         setProductFilterData(response.data.products);
+        setFilteredProducts([]);
+      } else {
+        console.error(response ?? 'Unexpected response structure');
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  const fetchProductsByPrice = async (minPrice, maxPrice) => {
+    try {
+      const response = await ProductServices.searchByPrice(minPrice, maxPrice);
+
+      if (response?.data && response?.status === 200) {
+        setFilteredProducts(response.data);
       } else {
         console.error(response ?? 'Unexpected response structure');
       }
@@ -77,11 +92,7 @@ export default function ProductMain() {
   };
 
   useEffect(() => {
-    fetchProductData();
-    if (selectedCategory && selectedCategory !== 'all') {
-      fetchProductFilterData(selectedCategory);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchCategoryData();
   }, []);
 
   useEffect(() => {
@@ -91,12 +102,12 @@ export default function ProductMain() {
   const handleChange = (event, newValue) => {
     if (typeof newValue === 'number') {
       setValue(newValue);
+      const maxPrice = calculateValue(newValue);
+      fetchProductsByPrice(0, maxPrice);
     }
   };
 
   const maxPrice = calculateValue(value);
-  // const filteredProducts = filterProducts(product, maxPrice);
-  console.log(filterProducts);
 
   const PrettoSlider = styled(Slider)({
     color: '#52af77',
@@ -141,6 +152,10 @@ export default function ProductMain() {
     const categoryId = event.target.value;
     setSelectedCategory(categoryId);
     await fetchProductFilterData(categoryId);
+    if (value) {
+      const maxPrices = calculateValue(value);
+      fetchProductsByPrice(0, maxPrices);
+    }
   };
 
   return (
@@ -215,15 +230,23 @@ export default function ProductMain() {
             </Box>
           </Box>
           <Box>
-            <Typography variant="h6">Lọc đánh giá</Typography>
+            <Typography variant="h6">Filter by Rating</Typography>
           </Box>
         </Stack>
       </Grid>
       <Grid item xs={12} sm={9.5}>
         <Stack sx={{ padding: 2, height: '100%', overflowY: 'auto' }}>
-          {(!selectedCategory || selectedCategory === 'all') && <ProductList />}
-          {selectedCategory && selectedCategory !== 'all' && productFilterData && (
-            <ProductListFilter productFilterData={productFilterData} />
+          {(!selectedCategory || selectedCategory === 'all') && filteredProducts.length === 0 && (
+            <ProductList />
+          )}
+          {selectedCategory &&
+            selectedCategory !== 'all' &&
+            productFilterData &&
+            filteredProducts.length === 0 && (
+              <ProductListFilter productFilterData={productFilterData} />
+            )}
+          {filteredProducts.length > 0 && (
+            <ProductListFilter productFilterData={filteredProducts} />
           )}
         </Stack>
       </Grid>

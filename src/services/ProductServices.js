@@ -19,6 +19,15 @@ const ProductServices = {
     }
     return null;
   },
+  searchByPrice: async (minPrice, maxPrice) => {
+    try {
+      const result = await getApi(`product/searchByPrice?minPrice=${minPrice}&maxPrice=${maxPrice}`, '');
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+    return null;
+  },
 };
 
 export default ProductServices;
