@@ -19,18 +19,31 @@ const ProductServices = {
     }
     return null;
   },
-  searchByPrice: async (minPrice, maxPrice, page, size) => {
+  searchProduct: async (name, minPrice, maxPrice, category, page, size, sort) => {
     try {
-      const result = await getApi(`product/searchByPrice?minPrice=${minPrice}&maxPrice=${maxPrice}&page=${page}&size=${size}`, '');
-      return result;
-    } catch (error) {
-      console.log(error);
-    }
-    return null;
-  },
-  searchByName: async (name, page, size) => {
-    try {
-      const result = await getApi(`product/searchByName?name=${name}&page=${page}&size=${size}`, '');
+      let apiUrl = `product/search?name=${name}`;
+
+      if (maxPrice) {
+        apiUrl += `&maxPrice=${maxPrice}`;
+      }
+      if (minPrice) {
+        apiUrl += `&minPrice=${minPrice}`;
+      }
+      if (category) {
+        apiUrl += `&category=${category}`;
+      }
+      if (page) {
+        apiUrl += `&page=${page}`;
+      }
+      if (size) {
+        apiUrl += `&size=${size}`;
+      }
+      if (sort) {
+        apiUrl += `&sort=${sort}`;
+      }
+
+      const result = await getApi(apiUrl, '');
+
       return result;
     } catch (error) {
       console.log(error);

@@ -93,7 +93,6 @@ ProductListFilter.propTypes = {
     PropTypes.shape({
       productName: PropTypes.string,
       price: PropTypes.number,
-      quantityInStock: PropTypes.number,
       description: PropTypes.string,
       createAt: PropTypes.any,
       unitOfMeasure: PropTypes.string,

@@ -11,6 +11,7 @@ import {
   TextField,
   RadioGroup,
   Typography,
+  Pagination,
   InputAdornment,
   FormControlLabel,
 } from '@mui/material';
@@ -18,7 +19,6 @@ import {
 import ProductServices from 'src/services/ProductServices';
 import CategoryServices from 'src/services/CategoryServices';
 
-import ProductList from '../list-view';
 import ProductListFilter from '../list-filter';
 
 function valueLabelFormat(value) {
@@ -45,8 +45,9 @@ export default function ProductMain() {
   const [selectedCategory, setSelectedCategory] = useState(
     localStorage.getItem('selectedCategory') || 'all'
   );
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const fetchCategoryData = async () => {
     try {
@@ -61,40 +62,28 @@ export default function ProductMain() {
     }
   };
 
-  const fetchProductFilterData = async (categoryId) => {
+  const fetchFilterProduct = async (
+    name,
+    minPrice = 0,
+    maxPrice,
+    categoryName,
+    page = 0,
+    size = 12,
+    sort = 'asc'
+  ) => {
     try {
-      const response = await CategoryServices.getDataById(categoryId);
+      const response = await ProductServices.searchProduct(
+        name,
+        minPrice,
+        maxPrice,
+        categoryName,
+        page,
+        size,
+        sort
+      );
       if (response?.data && response?.status === 200) {
-        setProductFilterData(response.data.products);
-        setFilteredProducts([]);
-      } else {
-        console.error(response ?? 'Unexpected response structure');
-      }
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-
-  const fetchProductsByPrice = async (minPrice, maxPrice) => {
-    try {
-      const response = await ProductServices.searchByPrice(minPrice, maxPrice, 0, 10);
-
-      if (response?.data && response?.status === 200) {
-        setFilteredProducts(response.data.content);
-      } else {
-        console.error(response ?? 'Unexpected response structure');
-      }
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-
-  const fetchProductsByName = async (name) => {
-    try {
-      const response = await ProductServices.searchByName(name, 0, 10);
-
-      if (response?.data && response?.status === 200) {
-        setFilteredProducts(response.data.content);
+        setProductFilterData(response.data.content);
+        setTotalPages(response.data.totalPages);
       } else {
         console.error(response ?? 'Unexpected response structure');
       }
@@ -111,18 +100,32 @@ export default function ProductMain() {
     localStorage.setItem('selectedCategory', selectedCategory);
   }, [selectedCategory]);
 
+  useEffect(() => {
+    const maxPrice = calculateValue(value);
+    if (selectedCategory === 'all' || searchTerm || value !== 10) {
+      fetchFilterProduct(searchTerm, 0, maxPrice, selectedCategory, currentPage - 1);
+    } else {
+      setProductFilterData(null);
+    }
+  }, [value, searchTerm, selectedCategory, currentPage]);
+
   const handleChange = (event, newValue) => {
     if (typeof newValue === 'number') {
       setValue(newValue);
-      const maxPrice = calculateValue(newValue);
-      fetchProductsByPrice(0, maxPrice);
     }
   };
 
   const handleSearchChange = (event) => {
-    const searchValue = event.target.value;
-    setSearchTerm(searchValue);
-    fetchProductsByName(searchValue);
+    setSearchTerm(event.target.value);
+  };
+
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (event, values) => {
+    setCurrentPage(values);
   };
 
   const maxPrice = calculateValue(value);
@@ -165,22 +168,6 @@ export default function ProductMain() {
       },
     },
   });
-
-  const handleCategoryChange = async (event) => {
-    const categoryId = event.target.value;
-    setSelectedCategory(categoryId);
-    await fetchProductFilterData(categoryId);
-  };
-
-  // const handleCategoryChange = async (event) => {
-  //   const categoryId = event.target.value;
-  //   setSelectedCategory(categoryId);
-  //   await fetchProductFilterData(categoryId);
-  //   if (value) {
-  //     const maxPrices = calculateValue(value);
-  //     fetchProductsByPrice(0, maxPrices);
-  //   }
-  // };
 
   return (
     <Grid container spacing={2}>
@@ -227,7 +214,7 @@ export default function ProductMain() {
               {categoryData.map((category) => (
                 <FormControlLabel
                   key={category.categoryId}
-                  value={category.categoryId}
+                  value={category.categoryName}
                   control={<Radio style={{ color: '#52af77' }} />}
                   label={category.categoryName}
                 />
@@ -262,17 +249,20 @@ export default function ProductMain() {
       </Grid>
       <Grid item xs={12} sm={9.5}>
         <Stack sx={{ padding: 2, height: '100%', overflowY: 'auto' }}>
-          {(!selectedCategory || selectedCategory === 'all') && filteredProducts.length === 0 && (
-            <ProductList />
-          )}
-          {selectedCategory &&
-            selectedCategory !== 'all' &&
-            productFilterData &&
-            filteredProducts.length === 0 && (
+          {productFilterData ? (
+            <>
               <ProductListFilter productFilterData={productFilterData} />
-            )}
-          {filteredProducts.length > 0 && (
-            <ProductListFilter productFilterData={filteredProducts} />
+              <Pagination
+                shape="rounded"
+                count={totalPages}
+                page={currentPage}
+                onChange={handlePageChange}
+                color="success"
+                sx={{ mt: 2, alignSelf: 'center' }}
+              />
+            </>
+          ) : (
+            <Typography>No products found.</Typography>
           )}
         </Stack>
       </Grid>
