@@ -134,8 +134,9 @@ export default function OrderList({
         setOrderId(response.data.orderId);
         if (selectedTab === 1) {
           setOpenDialog(true);
+          localStorage.setItem('choice', 'Purchase Order');
           setTimeout(() => {
-            navigate('/profile?choice=Purchase%20Order');
+            navigate('/profile');
           }, 2000);
         } else {
           setCheckoutOpen(true);

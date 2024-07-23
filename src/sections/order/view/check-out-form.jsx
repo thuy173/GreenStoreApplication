@@ -116,8 +116,9 @@ const PaymentHandler = ({ open, onClose, orderId }) => {
       if (response && response.status === 200) {
         showAlert('success', 'Payment successful!');
         setOpenDialog(true);
+        localStorage.setItem('choice', 'Purchase Order');
         setTimeout(() => {
-          navigate('/profile?choice=Purchase%20Order');
+          navigate('/profile');
         }, 2000);
       } else {
         showAlert('error', 'Payment failed!');

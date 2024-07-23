@@ -100,7 +100,8 @@ const OrderTracking = () => {
   }, [id]);
 
   const handleBackProfile = () => {
-    navigate('/profile?choice=Purchase%20Order');
+    localStorage.setItem('choice', 'Purchase Order');
+    navigate('/profile');
   };
 
   const getStepIndex = (status) => initialSteps.findIndex(step => step.label === status);
