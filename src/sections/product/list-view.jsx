@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import React, { useState, useEffect } from 'react';
 
-import { Grid } from '@mui/material';
+import { Grid, Pagination } from '@mui/material';
 
 import CartServices from 'src/services/CartServices';
 import ProductServices from 'src/services/ProductServices';
@@ -17,6 +17,10 @@ export default function ProductList() {
     const storedCount = parseInt(localStorage.getItem('cartItemCount'), 10);
     return !Number.isNaN(storedCount) ? storedCount : 0;
   });
+
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(12);
+  const [totalPages, setTotalPages] = useState(1);
 
   const showAlert = (severity, message) => {
     setAlert({ severity, message, isOpen: true });
@@ -37,18 +41,20 @@ export default function ProductList() {
     localStorage.setItem('cartItemCount', cartItemCount);
   }, [cartItemCount]);
 
-  useEffect(() => {
-    const fetchProductData = async () => {
-      try {
-        const response = await ProductServices.getData();
-        setProductData(response.data);
-      } catch (error) {
-        console.error('Failed to fetch product data:', error);
-      }
-    };
+  const fetchProductData = async () => {
+    try {
+      const response = await ProductServices.getData(page - 1, pageSize);
+      setProductData(response.data.content);
+      setTotalPages(response.data.totalPages);
+    } catch (error) {
+      console.error('Failed to fetch product data:', error);
+    }
+  };
 
-    fetchProductData();
-  }, []);
+  useEffect(() => {
+    fetchProductData(page, pageSize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, pageSize]);
 
   const handleAddCart = async (productId) => {
     const customerIdOrUuid = userId || getCartUuid();
@@ -85,19 +91,37 @@ export default function ProductList() {
     }
   };
 
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
   return (
-    <Grid container spacing={2} p={3}>
-      {productData.map((product, index) => (
-        <Grid item xs={12} sm={8} md={6} lg={4} key={index}>
-          <ProductCard product={product} currentDate={currentDate} handleAddCart={handleAddCart} />
-        </Grid>
-      ))}
+    <div>
+      <Grid container spacing={2} p={3}>
+        {productData.map((product, index) => (
+          <Grid item xs={12} sm={8} md={6} lg={4} key={index}>
+            <ProductCard
+              product={product}
+              currentDate={currentDate}
+              handleAddCart={handleAddCart}
+            />
+          </Grid>
+        ))}
+      </Grid>
+      <Pagination
+        shape="rounded"
+        count={totalPages}
+        page={page}
+        onChange={handlePageChange}
+        color="success"
+        style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}
+      />
       <CustomSnackbar
         open={alert.isOpen}
         onClose={handleCloseAlert}
         message={alert.message}
         severity={alert.severity}
       />
-    </Grid>
+    </div>
   );
 }

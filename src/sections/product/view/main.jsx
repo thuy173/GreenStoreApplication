@@ -62,9 +62,6 @@ export default function ProductMain() {
   };
 
   const fetchProductFilterData = async (categoryId) => {
-    if (categoryId === 'all') {
-      return;
-    }
     try {
       const response = await CategoryServices.getDataById(categoryId);
       if (response?.data && response?.status === 200) {
@@ -80,10 +77,10 @@ export default function ProductMain() {
 
   const fetchProductsByPrice = async (minPrice, maxPrice) => {
     try {
-      const response = await ProductServices.searchByPrice(minPrice, maxPrice);
+      const response = await ProductServices.searchByPrice(minPrice, maxPrice, 0, 10);
 
       if (response?.data && response?.status === 200) {
-        setFilteredProducts(response.data);
+        setFilteredProducts(response.data.content);
       } else {
         console.error(response ?? 'Unexpected response structure');
       }
@@ -94,10 +91,10 @@ export default function ProductMain() {
 
   const fetchProductsByName = async (name) => {
     try {
-      const response = await ProductServices.searchByName(name);
+      const response = await ProductServices.searchByName(name, 0, 10);
 
       if (response?.data && response?.status === 200) {
-        setFilteredProducts(response.data);
+        setFilteredProducts(response.data.content);
       } else {
         console.error(response ?? 'Unexpected response structure');
       }
@@ -173,11 +170,17 @@ export default function ProductMain() {
     const categoryId = event.target.value;
     setSelectedCategory(categoryId);
     await fetchProductFilterData(categoryId);
-    if (value) {
-      const maxPrices = calculateValue(value);
-      fetchProductsByPrice(0, maxPrices);
-    }
   };
+
+  // const handleCategoryChange = async (event) => {
+  //   const categoryId = event.target.value;
+  //   setSelectedCategory(categoryId);
+  //   await fetchProductFilterData(categoryId);
+  //   if (value) {
+  //     const maxPrices = calculateValue(value);
+  //     fetchProductsByPrice(0, maxPrices);
+  //   }
+  // };
 
   return (
     <Grid container spacing={2}>

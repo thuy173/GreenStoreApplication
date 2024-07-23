@@ -1,9 +1,9 @@
 import { getApi } from './agent';
 
 const ProductServices = {
-  getData: async () => {
+  getData: async (page, size) => {
     try {
-      const result = await getApi(`product`, '');
+      const result = await getApi(`product?page=${page}&size=${size}`, '');
       return result;
     } catch (error) {
       console.log(error);
@@ -19,18 +19,18 @@ const ProductServices = {
     }
     return null;
   },
-  searchByPrice: async (minPrice, maxPrice) => {
+  searchByPrice: async (minPrice, maxPrice, page, size) => {
     try {
-      const result = await getApi(`product/searchByPrice?minPrice=${minPrice}&maxPrice=${maxPrice}`, '');
+      const result = await getApi(`product/searchByPrice?minPrice=${minPrice}&maxPrice=${maxPrice}&page=${page}&size=${size}`, '');
       return result;
     } catch (error) {
       console.log(error);
     }
     return null;
   },
-  searchByName: async (name) => {
+  searchByName: async (name, page, size) => {
     try {
-      const result = await getApi(`product/searchByName?name=${name}`, '');
+      const result = await getApi(`product/searchByName?name=${name}&page=${page}&size=${size}`, '');
       return result;
     } catch (error) {
       console.log(error);
