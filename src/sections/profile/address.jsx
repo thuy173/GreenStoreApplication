@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
@@ -29,6 +29,10 @@ export default function AddressUser({ initialValues, onLoadData }) {
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
   const [dataDetail, setDataDetail] = useState({});
+
+  useEffect(() => {
+    setAddresses(initialValues || []);
+  }, [initialValues]);
 
   const showAlert = (severity, message) => {
     setAlert({ severity, message, isOpen: true });
@@ -91,8 +95,6 @@ export default function AddressUser({ initialValues, onLoadData }) {
   };
 
   const handleSuccess = (severity, message) => {
-    setOpenUpdateDialog(false);
-    onLoadData();
     setTimeout(() => {
       setAlert({ isOpen: true, message, severity });
     }, 200);
@@ -112,7 +114,6 @@ export default function AddressUser({ initialValues, onLoadData }) {
   };
 
   const handleUpdateSuccess = (severity, message, updatedData) => {
-    setOpenUpdateDialog(false);
     setAddresses((prevAddresses) =>
       prevAddresses.map((addr) => (addr.addressId === updatedData.addressId ? updatedData : addr))
     );
@@ -144,7 +145,7 @@ export default function AddressUser({ initialValues, onLoadData }) {
       <Divider>My address</Divider>
 
       <Stack px={4}>
-        {addresses.map((addressObj) => (
+        {(addresses || []).map((addressObj) => (
           <React.Fragment key={addressObj.addressId}>
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Stack
@@ -216,7 +217,11 @@ export default function AddressUser({ initialValues, onLoadData }) {
             <CloseIcon />
           </IconButton>
           <DialogContent>
-            <AddAddressNew onSuccess={handleSuccess} />
+            <AddAddressNew
+              onSuccess={handleSuccess}
+              onLoadData={onLoadData}
+              handleClose={handleCloseAdd}
+            />
           </DialogContent>
         </Dialog>
       )}
@@ -236,7 +241,12 @@ export default function AddressUser({ initialValues, onLoadData }) {
             <CloseIcon />
           </IconButton>
           <DialogContent>
-            <UpdateAddress addressObj={dataDetail} onSuccess={handleUpdateSuccess} />
+            <UpdateAddress
+              addressObj={dataDetail}
+              onSuccess={handleUpdateSuccess}
+              onLoadData={onLoadData}
+              handleClose={handleCloseUpdate}
+            />
           </DialogContent>
         </Dialog>
       )}
@@ -251,11 +261,11 @@ export default function AddressUser({ initialValues, onLoadData }) {
 }
 
 AddressUser.propTypes = {
-  onLoadData: PropTypes.func,
+  onLoadData: PropTypes.func.isRequired,
   initialValues: PropTypes.arrayOf(
     PropTypes.shape({
-      addressId: PropTypes.number,
-      address: PropTypes.string,
+      addressId: PropTypes.number.isRequired,
+      address: PropTypes.string.isRequired,
       addressDetail: PropTypes.string,
       isActive: PropTypes.bool,
     })

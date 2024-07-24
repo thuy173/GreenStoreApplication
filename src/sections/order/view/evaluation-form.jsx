@@ -203,11 +203,11 @@ const EvaluationDialog = ({onLoad, open, onClose, orderId, productIds }) => {
 };
 
 EvaluationDialog.propTypes = {
-  open: PropTypes.bool.isRequired,
+  open: PropTypes.bool,
   onLoad: PropTypes.func,
-  onClose: PropTypes.func.isRequired,
-  orderId: PropTypes.number.isRequired,
-  productIds: PropTypes.arrayOf(PropTypes.number).isRequired,
+  onClose: PropTypes.func,
+  orderId: PropTypes.number,
+  productIds: PropTypes.arrayOf(PropTypes.number),
 };
 
 export default EvaluationDialog;

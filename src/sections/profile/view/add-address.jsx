@@ -28,7 +28,7 @@ const MenuProps = {
   },
 };
 
-export default function AddAddressNew({ onSuccess }) {
+export default function AddAddressNew({ onSuccess, onLoadData, handleClose}) {
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -145,6 +145,8 @@ export default function AddAddressNew({ onSuccess }) {
       const response = await AddressServices.addData(payload);
       if (response && response.status === 200) {
         onSuccess('success', 'Address added successfully!');
+        onLoadData();
+        handleClose();
       } else {
         showAlert(
           'error',
@@ -255,4 +257,6 @@ export default function AddAddressNew({ onSuccess }) {
 
 AddAddressNew.propTypes = {
   onSuccess: PropTypes.func,
+  onLoadData: PropTypes.func,
+  handleClose: PropTypes.func,
 };

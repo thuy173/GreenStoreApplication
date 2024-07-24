@@ -19,7 +19,7 @@ import InformationBase from '../information-base';
 const InformationBaseView = () => {
   const userId = localStorage.getItem('uD');
   const [dataDetail, setDataDetail] = useState(null);
-  const [addressData, setAddressData] = useState(null);
+  const [addressData, setAddressData] = useState([]);
   const [choiceData] = useState([
     { categoryId: 1, categoryName: 'Information', icon: <InfoIcon /> },
     { categoryId: 2, categoryName: 'Address', icon: <HomeIcon /> },
@@ -42,6 +42,7 @@ const InformationBaseView = () => {
       console.error(error);
     }
   };
+
   const fetchAllAddressData = async () => {
     try {
       const response = await AddressServices.getData();
@@ -56,8 +57,8 @@ const InformationBaseView = () => {
   };
 
   useEffect(() => {
-    fetchData();
     fetchAllAddressData();
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 

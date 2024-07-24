@@ -30,7 +30,7 @@ const MenuProps = {
   },
 };
 
-export default function UpdateAddress({ onSuccess, addressObj }) {
+export default function UpdateAddress({ onSuccess, addressObj,onLoadData,handleClose }) {
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -170,6 +170,8 @@ export default function UpdateAddress({ onSuccess, addressObj }) {
       if (response && response.status === 200) {
         const updatedData = { ...addressObj, ...payload };
         onSuccess('success', 'Update address successfully!', updatedData);
+        onLoadData();
+        handleClose();
       } else {
         showAlert(
           'error',
@@ -292,6 +294,8 @@ export default function UpdateAddress({ onSuccess, addressObj }) {
 
 UpdateAddress.propTypes = {
   onSuccess: PropTypes.func,
+  onLoadData: PropTypes.func,
+  handleClose: PropTypes.func,
   addressObj: PropTypes.shape({
     addressId: PropTypes.number,
     province: PropTypes.string,

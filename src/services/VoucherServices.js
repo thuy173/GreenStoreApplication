@@ -3,7 +3,7 @@ import { getApi } from './agent';
 const VoucherServices = {
   getData: async () => {
     try {
-      const result = await getApi(`voucher`, '');
+      const result = await getApi(`voucher/active`, '');
       return result;
     } catch (error) {
       console.log(error);
