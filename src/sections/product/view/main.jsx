@@ -102,7 +102,7 @@ export default function ProductMain() {
 
   useEffect(() => {
     const maxPrice = calculateValue(value);
-    if (selectedCategory === 'all' || searchTerm || value !== 10) {
+    if (selectedCategory === 'all' || searchTerm || value !== 100) {
       fetchFilterProduct(searchTerm, 0, maxPrice, selectedCategory, currentPage - 1);
     } else {
       setProductFilterData(null);

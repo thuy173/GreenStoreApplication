@@ -75,7 +75,12 @@ export default function ProductListFilter({ productFilterData }) {
     <Grid container spacing={2} p={3}>
       {productFilterData.map((items, index) => (
         <Grid item xs={12} sm={8} md={6} lg={4} key={index}>
-          <ProductCard product={items} currentDate={currentDate} handleAddCart={handleAddCart} />
+          <ProductCard
+            product={items}
+            currentDate={currentDate}
+            handleAddCart={handleAddCart}
+            link={`detail/${items.productId}`}
+          />
         </Grid>
       ))}
       <CustomSnackbar

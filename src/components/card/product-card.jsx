@@ -6,7 +6,7 @@ import { Box, Card, Stack, Button, Typography, CardContent } from '@mui/material
 
 import Link from 'src/components/link';
 
-function ProductCard({ product, currentDate, handleAddCart }) {
+function ProductCard({ product, currentDate, handleAddCart, link }) {
   const createAtDate = parseISO(product.createAt);
   const isNewProduct = differenceInDays(currentDate, createAtDate) < 2;
 
@@ -66,7 +66,7 @@ function ProductCard({ product, currentDate, handleAddCart }) {
           },
         }}
       >
-        <Link href={`detail/${product.productId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+        <Link href={link} style={{ textDecoration: 'none', color: 'inherit' }}>
           <CardContent>
             <Typography marginLeft={1} marginTop={3} variant="h6" component="div" gutterBottom>
               {product.productName}
@@ -155,6 +155,7 @@ ProductCard.propTypes = {
   }).isRequired,
   currentDate: PropTypes.instanceOf(Date).isRequired,
   handleAddCart: PropTypes.func.isRequired,
+  link: PropTypes.any,
 };
 
 export default ProductCard;
