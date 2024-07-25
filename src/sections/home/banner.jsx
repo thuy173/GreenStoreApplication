@@ -108,7 +108,8 @@ export default function Banner() {
             borderRadius: '8px',
           }}
         >
-          Hello
+          Sweet Detox With Nutrients
+          <p style={{ position: 'absolute', top: '55%', left: '32%', fontSize: 26, fontWeight: 'normal' }}>Taste Good, Feel Good!</p>
         </Typography>
       </Box>
     </Stack>

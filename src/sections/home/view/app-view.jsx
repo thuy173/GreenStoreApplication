@@ -1,35 +1,53 @@
-import { useState } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { motion } from 'framer-motion';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { useInView } from 'react-intersection-observer';
 
 import { Stack } from '@mui/material';
-
-import CustomSnackbar from 'src/components/snackbar/snackbar';
 
 import Banner from '../banner';
 import AboutHome from '../about';
 import ProductList from '../product';
 import CategoryHome from '../category';
 
-// ----------------------------------------------------------------------
-
-export default function AppView() {
-  const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
-
-  const handleCloseAlert = () => {
-    setAlert({ message: null, severity: 'success', isOpen: false });
-  };
+const AnimatedSection = ({ children }) => {
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.2,
+  });
 
   return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: inView ? 1 : 0, y: inView ? 0 : 50 }}
+      transition={{ duration: 0.5 }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+AnimatedSection.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+export default function AppView() {
+  return (
     <Stack sx={{ marginBottom: -10 }}>
-      <CustomSnackbar
-        open={alert.isOpen}
-        onClose={handleCloseAlert}
-        message={alert.message}
-        severity={alert.severity}
-      />
-      <Banner />
-      <CategoryHome />
-      <ProductList />
-      <AboutHome />
+      <AnimatedSection>
+        <Banner />
+      </AnimatedSection>
+      <AnimatedSection>
+        <CategoryHome />
+      </AnimatedSection>
+      <AnimatedSection>
+        <ProductList />
+      </AnimatedSection>
+      <AnimatedSection>
+        <AboutHome />
+      </AnimatedSection>
     </Stack>
   );
 }

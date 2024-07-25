@@ -101,7 +101,14 @@ export default function ProductList() {
 
   return (
     <>
-      <Grid container spacing={3} p={12}>
+      <Grid
+        container
+        spacing={3}
+        pt={6}
+        sx={{
+          p: { xs: 8, sm: 10, md: 12 },
+        }}
+      >
         {productData.map((items, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
             <ProductCardFullPage

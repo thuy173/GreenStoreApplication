@@ -171,7 +171,7 @@ export default function ProductMain() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} sm={2.5}>
+      <Grid item xs={12} sm={4} md={4} lg={2.5}>
         <Stack sx={{ px: 6, py: 3, height: '100%' }}>
           <Box mt={3}>
             <TextField
@@ -247,7 +247,7 @@ export default function ProductMain() {
           </Box>
         </Stack>
       </Grid>
-      <Grid item xs={12} sm={9.5}>
+      <Grid item xs={12} sm={8} md={8} lg={9.5}>
         <Stack sx={{ padding: 2, height: '100%', overflowY: 'auto' }}>
           {productFilterData ? (
             <>

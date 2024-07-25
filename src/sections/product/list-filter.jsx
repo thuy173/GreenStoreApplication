@@ -72,7 +72,14 @@ export default function ProductListFilter({ productFilterData }) {
   };
 
   return (
-    <Grid container spacing={2} p={3}>
+    <Grid
+      container
+      spacing={2}
+      sx={{
+        p: { xs: 6, sm: 8, md: 3 },
+        pt: { xs: 1, sm: 1, md: 3 },
+      }}
+    >
       {productFilterData.map((items, index) => (
         <Grid item xs={12} sm={8} md={6} lg={4} key={index}>
           <ProductCard

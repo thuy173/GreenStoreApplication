@@ -30,7 +30,7 @@ function ProductCardFullPage({ product, currentDate, handleAddCart, link }) {
           sx={{
             position: 'absolute',
             top: 0,
-            right: '30%',
+            right: '21%',
             backgroundColor: '#507c5c',
             color: '#fff',
             padding: '4px 12px',
@@ -56,7 +56,7 @@ function ProductCardFullPage({ product, currentDate, handleAddCart, link }) {
           sx={{
             position: 'absolute',
             top: '42%',
-            left: '52%',
+            left: '40%',
             transform: 'translate(-50%, -50%)',
             backgroundColor: 'rgba(0, 0, 0, 0.6)',
             color: '#fff',
@@ -70,6 +70,15 @@ function ProductCardFullPage({ product, currentDate, handleAddCart, link }) {
             height: '120px',
             zIndex: 2,
             textAlign: 'center',
+            '@media (max-width: 1508px)': {
+              left: '52%',
+            },
+            '@media (max-width: 767px)': {
+              left: '55%',
+            },
+            '@media (max-width: 991px)': {
+              left: '54%',
+            },
           }}
         >
           Hết Hàng

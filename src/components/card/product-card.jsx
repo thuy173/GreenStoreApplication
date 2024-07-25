@@ -56,7 +56,7 @@ function ProductCard({ product, currentDate, handleAddCart, link }) {
           sx={{
             position: 'absolute',
             top: '42%',
-            left: '46%',
+            left: '36%',
             transform: 'translate(-50%, -50%)',
             backgroundColor: 'rgba(0, 0, 0, 0.6)',
             color: '#fff',
@@ -70,6 +70,15 @@ function ProductCard({ product, currentDate, handleAddCart, link }) {
             height: '120px',
             zIndex: 2,
             textAlign: 'center',
+            '@media (max-width: 1508px)': {
+              left: '46%',
+            },
+            '@media (max-width: 767px)': {
+              left: '50%',
+            },
+            '@media (max-width: 991px)': {
+              left: '50%',
+            },
           }}
         >
           Hết Hàng
