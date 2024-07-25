@@ -176,25 +176,29 @@ export default function AddressUser({ initialValues, onLoadData }) {
                 >
                   Update
                 </Button>
-                <Button
-                  variant="text"
-                  sx={{
-                    color: 'red',
-                    '&:hover': {
-                      backgroundColor: '#f5fcf4',
-                    },
-                    '&:focus': {
-                      backgroundColor: '#f5fcf4',
-                      p: 0,
-                    },
-                  }}
-                  onClick={() => handleDeleteAddress(addressObj.addressId)}
-                >
-                  Delete
-                </Button>
-                <Button onClick={() => handleActiveAddress(addressObj.addressId)}>
-                  Set active
-                </Button>
+                {!addressObj.isActive && (
+                  <>
+                    <Button
+                      variant="text"
+                      sx={{
+                        color: 'red',
+                        '&:hover': {
+                          backgroundColor: '#f5fcf4',
+                        },
+                        '&:focus': {
+                          backgroundColor: '#f5fcf4',
+                          p: 0,
+                        },
+                      }}
+                      onClick={() => handleDeleteAddress(addressObj.addressId)}
+                    >
+                      Delete
+                    </Button>
+                    <Button onClick={() => handleActiveAddress(addressObj.addressId)}>
+                      Set active
+                    </Button>
+                  </>
+                )}
               </Stack>
             </Stack>
             <Divider />
