@@ -6,8 +6,8 @@ import { Grid, Pagination } from '@mui/material';
 import CartServices from 'src/services/CartServices';
 import ProductServices from 'src/services/ProductServices';
 
-import ProductCard from 'src/components/card/product-card';
 import CustomSnackbar from 'src/components/snackbar/snackbar';
+import ProductCardFullPage from 'src/components/card/product-card-full-page';
 
 // ----------------------------------------------------------------------
 
@@ -104,7 +104,7 @@ export default function ProductList() {
       <Grid container spacing={3} p={12}>
         {productData.map((items, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-            <ProductCard
+            <ProductCardFullPage
               product={items}
               currentDate={currentDate}
               handleAddCart={handleAddCart}

@@ -6,7 +6,7 @@ import { Box, Card, Stack, Button, Typography, CardContent } from '@mui/material
 
 import Link from 'src/components/link';
 
-function ProductCard({ product, currentDate, handleAddCart, link }) {
+function ProductCardFullPage({ product, currentDate, handleAddCart, link }) {
   const createAtDate = parseISO(product.createAt);
   const isNewProduct = differenceInDays(currentDate, createAtDate) < 2;
   const isOutOfStock = product.quantityInStock === 0;
@@ -38,13 +38,13 @@ function ProductCard({ product, currentDate, handleAddCart, link }) {
             fontWeight: 'bold',
             zIndex: 1,
             '@media (max-width: 1508px)': {
-              right: '12%',
+              right: '-3.8%',
             },
             '@media (max-width: 767px)': {
-              right: '40%',
+              right: '-31%',
             },
             '@media (max-width: 991px)': {
-              right: '25%',
+              right: '6%',
             },
           }}
         >
@@ -56,7 +56,7 @@ function ProductCard({ product, currentDate, handleAddCart, link }) {
           sx={{
             position: 'absolute',
             top: '42%',
-            left: '46%',
+            left: '52%',
             transform: 'translate(-50%, -50%)',
             backgroundColor: 'rgba(0, 0, 0, 0.6)',
             color: '#fff',
@@ -164,7 +164,7 @@ function ProductCard({ product, currentDate, handleAddCart, link }) {
   );
 }
 
-ProductCard.propTypes = {
+ProductCardFullPage.propTypes = {
   product: PropTypes.shape({
     productId: PropTypes.number,
     productName: PropTypes.string,
@@ -184,4 +184,4 @@ ProductCard.propTypes = {
   link: PropTypes.any,
 };
 
-export default ProductCard;
+export default ProductCardFullPage;

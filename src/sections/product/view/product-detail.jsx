@@ -265,6 +265,7 @@ const ProductDetail = ({ initialValues }) => {
                   color: '#d6e5d8',
                 },
               }}
+              disabled={quantityInStock === 0}
               onClick={() => handleAddCart(quantity)}
               variant="contained"
               endIcon={<ArrowForwardIcon />}
@@ -272,6 +273,11 @@ const ProductDetail = ({ initialValues }) => {
               Buy now
             </Button>
           </Stack>
+          {quantityInStock === 0 && (
+            <Typography variant="body1" color="error" mt={2}>
+              Out of Stock
+            </Typography>
+          )}
           <Stack mt={5} ml={-2.5}>
             <Slider {...settings}>
               {initialValues.productImages.map((image, index) => (
