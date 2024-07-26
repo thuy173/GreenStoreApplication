@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 
 import FlipCameraIosIcon from '@mui/icons-material/FlipCameraIos';
-import { Stack, Button, Backdrop, TextField, IconButton, CircularProgress } from '@mui/material';
+import { Stack, Button, Backdrop, TextField, IconButton, Typography, CircularProgress } from '@mui/material';
 
 import ProfileServices from 'src/services/ProfileServices';
 
@@ -150,6 +150,9 @@ export default function InformationBase({ initialValues }) {
           <input type="file" hidden onChange={handleFileChange} accept="image/*" />
         </IconButton>
       </Stack>
+      <Stack pl={3.5} pt={2}>
+        <Typography>Point: {initialValues.points}</Typography>
+      </Stack>
       <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} p={3}>
         <TextField
           id="firstName"
@@ -225,7 +228,8 @@ export default function InformationBase({ initialValues }) {
 
 InformationBase.propTypes = {
   initialValues: PropTypes.shape({
-    customerId: PropTypes.any,
+    customerId: PropTypes.number,
+    points: PropTypes.number,
     fullName: PropTypes.string,
     email: PropTypes.string,
     phoneNumber: PropTypes.string,

@@ -19,9 +19,9 @@ const OrderServices = {
     }
     return null;
   },
-  addData: async (payload) => {
+  addData: async (pointsToUse, payload) => {
     try {
-      const result = await postApi(`order`, payload);
+      const result = await postApi(`order?pointsToUse=${pointsToUse}`, payload);
       return result;
     } catch (error) {
       console.log(error);
@@ -56,7 +56,7 @@ const OrderServices = {
     }
     return null;
   },
-  
+
   deleteData: async (id) => {
     try {
       const result = await deleteApi(`order/${id}`);

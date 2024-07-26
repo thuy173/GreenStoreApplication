@@ -10,6 +10,7 @@ import {
   Radio,
   Button,
   Divider,
+  Checkbox,
   TextField,
   Container,
   Typography,
@@ -47,6 +48,7 @@ export default function OrderList({
   const [orderId, setOrderId] = useState();
   const [openVoucherDialog, setOpenVoucherDialog] = useState(false);
   const [voucher, setVoucher] = useState({ voucherId: null, discount: 0 });
+  const [applyPoints, setApplyPoints] = useState(false);
 
   const handleChangeTab = (event, newValue) => {
     setSelectedTab(newValue);
@@ -86,7 +88,8 @@ export default function OrderList({
   const discountAmount = totalOrderAmount * (voucher.discount / 100);
   const discountedTotalOrderAmount = totalOrderAmount - discountAmount;
   const shippingFee = 12;
-  const totalPayment = discountedTotalOrderAmount + shippingFee;
+  const pointsValue = applyPoints ? dataDetail.points : 0;
+  const totalPayment = discountedTotalOrderAmount + shippingFee - pointsValue;
 
   const handleOrder = async () => {
     const activeAddress = getActiveAddress();
@@ -98,6 +101,8 @@ export default function OrderList({
     }
 
     const paymentMethodSend = selectedTab === 1 ? 'cod' : 'stripe';
+
+    const pointsToSend = applyPoints ? dataDetail.points : 0;
 
     const payload = {
       customerId: dataDetail?.customerId || null,
@@ -122,7 +127,7 @@ export default function OrderList({
     }
 
     try {
-      const response = await OrderServices.addData(payload);
+      const response = await OrderServices.addData(pointsToSend, payload);
       if (response && response.status === 200) {
         dispatch(clearCart());
 
@@ -264,6 +269,20 @@ export default function OrderList({
           )}
         </Grid>
         <Divider sx={{ my: 2 }} />
+        <Grid container justifyContent="end" alignItems="center">
+          <Typography variant="body2">Point: {dataDetail?.points}</Typography>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={applyPoints}
+                onChange={(e) => setApplyPoints(e.target.checked)}
+                color="primary"
+              />
+            }
+            label=""
+          />
+        </Grid>
+        <Divider sx={{ my: 2 }} />
         <Grid container justifyContent="start">
           <Grid item ml={3}>
             <Typography variant="h6" sx={{ mb: 2 }}>
@@ -329,6 +348,11 @@ export default function OrderList({
           <Typography variant="body1" align="right">
             Transport fee: ${shippingFee}
           </Typography>
+          {applyPoints && (
+            <Typography variant="body1" align="right">
+              Points applied: -${pointsValue.toLocaleString()}
+            </Typography>
+          )}
           <Typography variant="h6" align="right">
             Total payment:{' '}
             <span style={{ color: '#507c5c' }}>${totalPayment.toLocaleString()}</span>
@@ -373,7 +397,8 @@ OrderList.propTypes = {
   phoneNumber: PropTypes.string,
   shippingAddress: PropTypes.string,
   dataDetail: PropTypes.shape({
-    customerId: PropTypes.any,
+    customerId: PropTypes.number,
+    points: PropTypes.number,
     fullName: PropTypes.string,
     email: PropTypes.string,
     phoneNumber: PropTypes.string,
