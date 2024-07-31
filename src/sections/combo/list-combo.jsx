@@ -1,162 +1,73 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 
-import AddIcon from '@mui/icons-material/Add';
-import {
-  Box,
-  Card,
-  Grid,
-  Stack,
-  Button,
-  CardMedia,
-  Typography,
-  CardContent,
-  useMediaQuery,
-} from '@mui/material';
+import { Box, Grid, Button, CardMedia, Container, Typography } from '@mui/material';
 
-import { fDateTime } from 'src/utils/format-time';
+import ComboServices from 'src/services/ComboServices';
 
-import BlogServices from 'src/services/BlogServices';
+import ComboCard from 'src/components/card/combo-card';
 
-import CustomSnackbar from 'src/components/snackbar/snackbar';
-
-
-const ArticleCard = ({ article, isLargeScreen }) => (
-  <Card
-    component={Link}
-    to={`/blog/${article.blogId}`}
-    sx={{
-      display: 'flex',
-      flexDirection: 'row',
-      flex: 1,
-      bgcolor: '#fbf7f0',
-      textDecoration: 'none',
-      color: 'inherit',
-    }}
-  >
-    <Grid container direction="row" justifyContent="center" alignItems="stretch">
-      {!isLargeScreen && (
-        <Grid item xs={4}>
-          <CardMedia
-            component="img"
-            sx={{ height: '100%', objectFit: 'cover' }}
-            image={article.thumbnail}
-            alt={article.title}
-          />
-        </Grid>
-      )}
-      <Grid
-        item
-        xs={8}
-        sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
-      >
-        <CardContent>
-          <Typography
-            component="div"
-            variant="h4"
-            sx={{
-              display: '-webkit-box',
-              overflow: 'hidden',
-              WebkitBoxOrient: 'vertical',
-              WebkitLineClamp: 2,
-              textOverflow: 'ellipsis',
-              wordBreak: 'break-word',
-            }}
-          >
-            {article.title}
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            color="textSecondary"
-            component="div"
-            sx={{
-              display: '-webkit-box',
-              overflow: 'hidden',
-              WebkitBoxOrient: 'vertical',
-              WebkitLineClamp: 2,
-              textOverflow: 'ellipsis',
-              wordBreak: 'break-word',
-            }}
-          >
-            {article.description}
-          </Typography>
-          <Typography variant="caption" color="textSecondary" component="div">
-            {fDateTime(article.createAt)}
-          </Typography>
-        </CardContent>
+const ListCombo = ({ advice, bmiCategory }) => (
+  <Container>
+    <Grid container spacing={4} alignItems="center" mt={6}>
+      <Grid item xs={12} md={6}>
+        <Header advice={advice} bmiCategory={bmiCategory} />
       </Grid>
-      {isLargeScreen && (
-        <Grid item xs={4}>
-          <CardMedia
-            component="img"
-            sx={{ height: '100%', objectFit: 'cover' }}
-            image={article.thumbnail}
-            alt={article.title}
-          />
-        </Grid>
-      )}
+      <Grid item xs={12} md={6}>
+        <ReviewAndImage />
+      </Grid>
     </Grid>
-  </Card>
+    <MainContent bmiStatus={advice.status} />
+  </Container>
+);
+ListCombo.propTypes = {
+  advice: PropTypes.object,
+  bmiCategory: PropTypes.string,
+};
+
+const Header = ({ advice, bmiCategory }) => (
+  <Box justifyContent="center" alignItems="center" textAlign="center">
+    <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
+      <span style={{ color: '#78c850' }}>{bmiCategory}</span>
+    </Typography>
+    <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#333' }}>
+      {advice?.content}
+    </Typography>
+    <Button variant="contained" color="warning" sx={{ borderRadius: 20, paddingX: 4, mt: 4 }}>
+      Shop now
+    </Button>
+  </Box>
 );
 
-ArticleCard.propTypes = {
-  article: PropTypes.shape({
-    blogId: PropTypes.number,
-    title: PropTypes.string,
-    description: PropTypes.string,
-    thumbnail: PropTypes.string,
-    createAt: PropTypes.string,
-  }).isRequired,
-  isLargeScreen: PropTypes.bool.isRequired,
+Header.propTypes = {
+  advice: PropTypes.object,
+  bmiCategory: PropTypes.string,
 };
 
-const ArticlesList = ({ blogData }) => {
-  const isLargeScreen = useMediaQuery((theme) => theme.breakpoints.up('md'));
+const ReviewAndImage = () => (
+  <Box sx={{ position: 'relative' }}>
+    <CardMedia
+      component="img"
+      src="https://res.cloudinary.com/dmmk9racr/image/upload/v1721470962/uvu3jgwgz41x2piw7tgx.jpg"
+      alt="Main dish"
+      sx={{
+        height: 300,
+        borderRadius: '50%',
+        border: '4px solid #fff',
+        boxShadow: '0 0 20px rgba(0,0,0,0.1)',
+      }}
+    />
+  </Box>
+);
 
-  return (
-    <Box sx={{ flexGrow: 1 }} mt={3}>
-      <Grid container spacing={3}>
-        {blogData.map((article, index) => (
-          <Grid
-            item
-            xs={12}
-            md={index === 0 ? 12 : 6}
-            key={article.blogId}
-            sx={{ display: 'flex', flex: 1 }}
-          >
-            <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-              <ArticleCard article={article} isLargeScreen={index !== 0 && isLargeScreen} />
-            </Box>
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
-  );
-};
+const MainContent = ({ bmiStatus }) => {
+  const [comboData, setComboData] = useState([]);
 
-ArticlesList.propTypes = {
-  blogData: PropTypes.arrayOf(PropTypes.object).isRequired,
-};
-
-const ListCombo = () => {
-  const navigate = useNavigate();
-  const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
-  const [blogData, setBlogData] = useState([]);
-
-  const handleCloseAlert = () => {
-    setAlert({ message: null, severity: 'success', isOpen: false });
-  };
-
-  const showAlert = (severity, message) => {
-    setAlert({ severity, message, isOpen: true });
-  };
-
-  const fetchProductData = async () => {
+  const fetchComboData = async () => {
     try {
-      const response = await BlogServices.getData();
+      const response = await ComboServices.getByBMIStatus(bmiStatus);
       if (response?.data && response?.status === 200) {
-        setBlogData(response.data);
+        setComboData(response.data);
       } else {
         console.error(response ?? 'Unexpected response structure');
       }
@@ -166,59 +77,28 @@ const ListCombo = () => {
   };
 
   useEffect(() => {
-    fetchProductData();
-  }, []);
-
-  const handleOpenCreate = () => {
-    navigate('/blog/create');
-  };
-
-  useEffect(() => {
-    const add = localStorage.getItem('addPost') === 'true';
-    const update = localStorage.getItem('updatePost') === 'true';
-
-    if (add) {
-      showAlert('success', 'Post has been created successfully. Wait for approval!');
-      localStorage.removeItem('addPost');
-    }
-    if (update) {
-      showAlert('success', 'Post has been updated successfully. Wait for approval!');
-      localStorage.removeItem('updatePost');
-    }
+    fetchComboData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <Box sx={{ px: 12, pt: 1 }}>
-      <Stack direction="row" justifyContent="end" alignItems="center">
-        <Button
-          variant="outlined"
-          startIcon={<AddIcon />}
-          sx={{
-            marginTop: 4,
-            bgcolor: '#507c5c',
-            borderColor: '#507c5c',
-            color: '#d6e5d8',
-            '&:hover': {
-              backgroundColor: '#26643b',
-              color: '#fff',
-              borderColor: '#507c5c',
-            },
-          }}
-          onClick={handleOpenCreate}
-        >
-          Create post
-        </Button>
-      </Stack>
-
-      <ArticlesList blogData={blogData} />
-      <CustomSnackbar
-        open={alert.isOpen}
-        onClose={handleCloseAlert}
-        message={alert.message}
-        severity={alert.severity}
-      />
-    </Box>
+    <Grid container spacing={2} sx={{ marginTop: 4 }}>
+      {comboData.map((combo) => (
+        <Grid item xs={12} md={4} key={combo.comboId}>
+          <ComboCard
+            title={combo.comboName}
+            description={combo.description}
+            calories={`${combo.calories ?? 'N/A'} kcal`}
+            image="/path-to-your-image"
+          />
+        </Grid>
+      ))}
+    </Grid>
   );
+};
+
+MainContent.propTypes = {
+  bmiStatus: PropTypes.string,
 };
 
 export default ListCombo;

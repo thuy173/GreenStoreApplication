@@ -1,9 +1,9 @@
-import { getApi, putApi2, postApi, deleteApi } from './agent';
+import { getApi, postApi } from './agent';
 
 const ComboServices = {
-  getCart: async (id) => {
+  getByBMIStatus: async (status) => {
     try {
-      const result = await getApi(`cart/${id}`, '');
+      const result = await getApi(`combo/byBmi?bmiStatus=${status}`, '');
       return result;
     } catch (error) {
       console.log(error);
@@ -14,27 +14,6 @@ const ComboServices = {
   calculateBMI: async (payload) => {
     try {
       const result = await postApi(`bmi/calculate`, payload);
-      return result;
-    } catch (error) {
-      console.log(error);
-    }
-    return null;
-  },
-  updateQuantity: async (customerIdOrUuid, cartItemId, quantity, payload) => {
-    try {
-      const result = await putApi2(
-        `cart/${customerIdOrUuid}/items/${cartItemId}?quantity=${quantity}`,
-        payload
-      );
-      return result;
-    } catch (error) {
-      console.log(error);
-    }
-    return null;
-  },
-  deleteItem: async (customerIdOrUuid, cartItemId, payload) => {
-    try {
-      const result = await deleteApi(`cart/${customerIdOrUuid}/items/${cartItemId}`, payload);
       return result;
     } catch (error) {
       console.log(error);
