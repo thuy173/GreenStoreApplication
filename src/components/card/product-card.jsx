@@ -81,7 +81,7 @@ function ProductCard({ product, currentDate, handleAddCart, link }) {
             },
           }}
         >
-          Hết Hàng
+          Out of stock
         </Box>
       )}
       <Card

@@ -6,6 +6,8 @@ import { useInView } from 'react-intersection-observer';
 
 import { Stack } from '@mui/material';
 
+import BMICalculator from 'src/sections/combo/bmi';
+
 import Banner from '../banner';
 import AboutHome from '../about';
 import ProductList from '../product';
@@ -47,6 +49,9 @@ export default function AppView() {
       </AnimatedSection>
       <AnimatedSection>
         <AboutHome />
+      </AnimatedSection>
+      <AnimatedSection>
+        <BMICalculator />
       </AnimatedSection>
     </Stack>
   );

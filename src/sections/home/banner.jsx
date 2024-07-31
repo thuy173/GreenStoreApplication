@@ -100,16 +100,29 @@ export default function Banner() {
           variant="h2"
           sx={{
             position: 'absolute',
-            top: '16%',
+            top: { xs: '10%', sm: '16%' },
             left: '50%',
             transform: 'translate(-50%, -50%)',
             color: 'black',
             padding: '8px',
-            borderRadius: '8px',
+            textAlign: 'center',
+            width: '100%',
+            boxSizing: 'border-box',
           }}
         >
           Sweet Detox With Nutrients
-          <p style={{ position: 'absolute', top: '55%', left: '32%', fontSize: 26, fontWeight: 'normal' }}>Taste Good, Feel Good!</p>
+          <p
+            style={{
+              position: 'absolute',
+              top: { xs: '58%', sm: '60%' },
+              left: '50%',
+              transform: 'translate(-50%, 0%)',
+              fontSize: 26,
+              fontWeight: 'normal',
+            }}
+          >
+            Taste Good, Feel Good!
+          </p>
         </Typography>
       </Box>
     </Stack>

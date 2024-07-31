@@ -81,7 +81,7 @@ function ProductCardFullPage({ product, currentDate, handleAddCart, link }) {
             },
           }}
         >
-          Hết Hàng
+          Out of stock
         </Box>
       )}
       <Card

@@ -9,8 +9,8 @@ const headerConfig = [
     path: '/product',
   },
   {
-    title: 'event',
-    path: '/product',
+    title: 'combo',
+    path: '/combo',
   },
   {
     title: 'blog',

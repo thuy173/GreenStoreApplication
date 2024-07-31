@@ -104,9 +104,9 @@ export default function ProductList() {
       <Grid
         container
         spacing={3}
-        pt={6}
         sx={{
           p: { xs: 8, sm: 10, md: 12 },
+          pt: { xs: 4, sm: 5, md: 6 },
         }}
       >
         {productData.map((items, index) => (
