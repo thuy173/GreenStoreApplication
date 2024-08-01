@@ -1,7 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import 'chart.js/auto';
-import React, { useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
+import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
@@ -25,6 +26,7 @@ import ComboServices from 'src/services/ComboServices';
 import ListCombo from './list-combo';
 
 const BMICalculator = () => {
+  const location = useLocation();
   const [gender, setGender] = useState('');
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
@@ -32,6 +34,32 @@ const BMICalculator = () => {
   const [bmiCategory, setBMICategory] = useState('');
   const [advice, setAdvice] = useState(null);
   const [showListCombo, setShowListCombo] = useState(false);
+
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem('bmiData'));
+    if (savedData) {
+      setHeight(savedData.height);
+      setWeight(savedData.weight);
+      setBMI(savedData.bmi);
+      setBMICategory(savedData.bmiCategory);
+      setAdvice(savedData.advice);
+      setShowListCombo(savedData.showListCombo);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (location.state?.fromComboDetail) {
+      const savedData = JSON.parse(localStorage.getItem('bmiData'));
+      if (savedData) {
+        setHeight(savedData.height);
+        setWeight(savedData.weight);
+        setBMI(savedData.bmi);
+        setBMICategory(savedData.bmiCategory);
+        setAdvice(savedData.advice);
+        setShowListCombo(savedData.showListCombo);
+      }
+    }
+  }, [location.state]);
 
   const handleClick = () => {
     setShowListCombo(!showListCombo);
@@ -48,9 +76,19 @@ const BMICalculator = () => {
     try {
       const response = await ComboServices.calculateBMI(credentials);
       if (response && response.status === 200) {
-        setBMI(response.data.bmi.toFixed(2));
-        setBMICategory(response.data.status);
-        setAdvice(response.data.advice);
+        const bmiData = {
+          height,
+          weight,
+          bmi: response.data.bmi.toFixed(2),
+          bmiCategory: response.data.status,
+          advice: response.data.advice,
+          showListCombo: true,
+        };
+        setBMI(bmiData.bmi);
+        setBMICategory(bmiData.bmiCategory);
+        setAdvice(bmiData.advice);
+        setShowListCombo(true);
+        localStorage.setItem('bmiData', JSON.stringify(bmiData));
       } else {
         console.log('Error');
       }
@@ -97,8 +135,7 @@ const BMICalculator = () => {
   };
 
   return (
-    <>
-      {' '}
+    <Box justifyContent="center" alignItems="center">
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh" margin={4}>
         <Card
           sx={{
@@ -267,7 +304,7 @@ const BMICalculator = () => {
         </Card>
       </Box>
       {showListCombo && <ListCombo advice={advice} bmiCategory={bmiCategory} />}
-    </>
+    </Box>
   );
 };
 

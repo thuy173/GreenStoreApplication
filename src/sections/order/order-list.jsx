@@ -37,6 +37,8 @@ export default function OrderList({
   shippingAddress,
   dataDetail,
   items,
+  comboId,
+  priceCombo,
 }) {
   const [alert, setAlert] = useState({ message: null, severity: 'success', isOpen: false });
   const dispatch = useDispatch();
@@ -84,7 +86,9 @@ export default function OrderList({
   };
 
   const fullAddress = getActiveAddress() || shippingAddress;
-  const totalOrderAmount = items.reduce((acc, item) => acc + item.totalPrice, 0);
+  const totalOrderAmount = priceCombo !== undefined 
+  ? priceCombo 
+  : items.reduce((acc, item) => acc + item.totalPrice, 0);
   const discountAmount = totalOrderAmount * (voucher.discount / 100);
   const discountedTotalOrderAmount = totalOrderAmount - discountAmount;
   const shippingFee = 12;
@@ -118,6 +122,7 @@ export default function OrderList({
         productId: item.productId,
         quantity: item.quantity,
       })),
+      ...(comboId && { comboId, comboOrder: true }),
     };
 
     if (!dataDetail?.customerId) {
@@ -186,40 +191,46 @@ export default function OrderList({
       </Box>
       <Box sx={{ mt: 2, p: 2, borderRadius: '4px', backgroundColor: '#ffffff' }}>
         <Grid container spacing={2}>
-          {items.map((item, index) => (
-            <Grid item xs={12} key={index}>
-              <Grid container alignItems="center">
-                <Grid item xs={12} sm={2} ml={4}>
-                  <img
-                    src={item.productImages[0].imageUrl}
-                    alt={item.productName}
-                    style={{ width: 60, height: 60 }}
-                  />
+          {items && items.length > 0 ? (
+            items.map((item, index) => (
+              <Grid item xs={12} key={index}>
+                <Grid container alignItems="center">
+                  <Grid item xs={12} sm={2} ml={4}>
+                    <img
+                      src={item.productImages[0].imageUrl}
+                      alt={item.productName}
+                      style={{ width: 60, height: 60 }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={9}>
+                    <Typography variant="body1">{item.productName}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {item.description}
+                    </Typography>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} sm={9}>
-                  <Typography variant="body1">{item.productName}</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {item.description}
-                  </Typography>
+                <Divider sx={{ my: 2 }} />
+                <Grid container justifyContent="space-between">
+                  <Grid item ml={4}>
+                    <Typography variant="body2">
+                      Price: ${item.price ? item.price.toLocaleString() : 0}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="body2">Quantity: {item.quantity}</Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="body2">
+                      Amount: ${item.totalPrice ? item.totalPrice.toLocaleString() : ' '}
+                    </Typography>
+                  </Grid>
                 </Grid>
+                <Divider sx={{ my: 2 }} />
               </Grid>
-              <Divider sx={{ my: 2 }} />
-              <Grid container justifyContent="space-between">
-                <Grid item ml={4}>
-                  <Typography variant="body2">Price: ${item.price.toLocaleString()}</Typography>
-                </Grid>
-                <Grid item>
-                  <Typography variant="body2">Quantity: {item.quantity}</Typography>
-                </Grid>
-                <Grid item>
-                  <Typography variant="body2">
-                    Amount: ${item.totalPrice.toLocaleString()}
-                  </Typography>
-                </Grid>
-              </Grid>
-              <Divider sx={{ my: 2 }} />
-            </Grid>
-          ))}
+            ))
+          ) : (
+            <Typography variant="body1">No items to display.</Typography>
+          )}
           <Box sx={{ mt: 2, ml: 2 }}>
             <TextField size="small" fullWidth label="Note to the store..." variant="outlined" />
           </Box>
@@ -392,6 +403,8 @@ export default function OrderList({
 }
 
 OrderList.propTypes = {
+  comboId: PropTypes.number,
+  priceCombo: PropTypes.any,
   name: PropTypes.string,
   email: PropTypes.string,
   phoneNumber: PropTypes.string,

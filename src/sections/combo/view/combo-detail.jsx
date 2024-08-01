@@ -2,7 +2,7 @@ import React from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { styled } from '@mui/system';
@@ -47,7 +47,13 @@ const CircularCard = styled(Card)(({ theme }) => ({
 
 const ComboDetail = () => {
   const location = useLocation();
-  const { comboId, comboProducts } = location.state || { comboId: null, comboProducts: [] };
+  const navigate = useNavigate();
+  const { comboId, comboProducts, comboName, priceCombo } = location.state || {
+    comboId: null,
+    comboProducts: [],
+    comboName: '',
+    priceCombo: 0,
+  };
 
   const settings = {
     infinite: true,
@@ -68,20 +74,45 @@ const ComboDetail = () => {
     },
   };
 
+  const handDetail = (id) => {
+    navigate(`/product/detail/${id}`);
+  };
+
+  const handleBuyNow = () => {
+    const userId = localStorage.getItem('uD');
+    navigate('/order', {
+      state: {
+        userId,
+        comboId,
+        priceCombo,
+        items: comboProducts.flatMap((comboProduct) =>
+          comboProduct.products.map((product) => ({
+            ...product,
+            quantity: comboProduct.quantity,
+          }))
+        ),
+      },
+    });
+  };
+
   return (
     <Container maxWidth="lg" sx={{ textAlign: 'center', py: 5 }}>
       <Typography variant="h2" component="h1" gutterBottom>
-        Combo Detail for Combo ID: {comboId}
+        Combo Detail for Combo ID: {comboId} | {comboName}
       </Typography>
       <Typography variant="h6" component="p" gutterBottom>
         Here are the products included in this combo:
       </Typography>
       <CircularContainer>
         <Slider {...settings}>
-          {comboProducts.map((comboProduct, index) => (
+          {comboProducts.map((comboProduct, index) =>
             comboProduct.products.map((product) => (
-              <CircularCard key={product.productId}>
-                <CardMedia component="img" image={product.productImages[0]?.imageUrl} alt={product.productName} />
+              <CircularCard key={product.productId} onClick={() => handDetail(product.productId)}>
+                <CardMedia
+                  component="img"
+                  image={product.productImages[0]?.imageUrl}
+                  alt={product.productName}
+                />
                 <CardContent>
                   <Typography variant="h5" component="h2">
                     {product.productName}
@@ -95,10 +126,10 @@ const ComboDetail = () => {
                 </CardContent>
               </CircularCard>
             ))
-          ))}
+          )}
         </Slider>
       </CircularContainer>
-      <Button variant="contained" color="primary" sx={{ mt: 3 }}>
+      <Button variant="contained" color="primary" sx={{ mt: 3 }} onClick={handleBuyNow}>
         Buy now
       </Button>
     </Container>

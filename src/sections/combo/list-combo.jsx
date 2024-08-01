@@ -2,66 +2,34 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 
-import { Box, Grid, Button, CardMedia, Container, Typography } from '@mui/material';
+import { Box, Grid, Container, Typography } from '@mui/material';
 
 import ComboServices from 'src/services/ComboServices';
 
 import ComboCard from 'src/components/card/combo-card';
 
-const ListCombo = ({ advice, bmiCategory }) => (
-  <Container>
-    <Grid container spacing={4} alignItems="center" mt={6}>
-      <Grid item xs={12} md={6}>
-        <Header advice={advice} bmiCategory={bmiCategory} />
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <ReviewAndImage />
-      </Grid>
-    </Grid>
-    <MainContent bmiStatus={advice.status} />
-  </Container>
+const AdvicePaper = ({ advice, bmiCategory }) => (
+  <Box
+    style={{
+      borderRadius: '20px',
+      padding: '20px',
+      background: 'url("https://www.transparenttextures.com/patterns/paper-fibers.png")',
+      backgroundColor: '#f9f9f9',
+    }}
+  >
+    <Typography variant="h6" gutterBottom>
+      Advice:
+    </Typography>
+    <Typography variant="body1">{advice?.content}</Typography>
+  </Box>
 );
-ListCombo.propTypes = {
+
+AdvicePaper.propTypes = {
   advice: PropTypes.object,
   bmiCategory: PropTypes.string,
 };
 
-const Header = ({ advice, bmiCategory }) => (
-  <Box justifyContent="center" alignItems="center" textAlign="center">
-    <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333' }}>
-      <span style={{ color: '#78c850' }}>{bmiCategory}</span>
-    </Typography>
-    <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#333' }}>
-      {advice?.content}
-    </Typography>
-    <Button variant="contained" color="warning" sx={{ borderRadius: 20, paddingX: 4, mt: 4 }}>
-      Shop now
-    </Button>
-  </Box>
-);
-
-Header.propTypes = {
-  advice: PropTypes.object,
-  bmiCategory: PropTypes.string,
-};
-
-const ReviewAndImage = () => (
-  <Box sx={{ position: 'relative' }}>
-    <CardMedia
-      component="img"
-      src="https://res.cloudinary.com/dmmk9racr/image/upload/v1721470962/uvu3jgwgz41x2piw7tgx.jpg"
-      alt="Main dish"
-      sx={{
-        height: 300,
-        borderRadius: '50%',
-        border: '4px solid #fff',
-        boxShadow: '0 0 20px rgba(0,0,0,0.1)',
-      }}
-    />
-  </Box>
-);
-
-const MainContent = ({ bmiStatus }) => {
+const ComboSuggestions = ({ bmiStatus }) => {
   const [comboData, setComboData] = useState([]);
   const navigate = useNavigate();
 
@@ -84,19 +52,25 @@ const MainContent = ({ bmiStatus }) => {
   }, []);
 
   const handleComboClick = (combo) => {
-    navigate(`/combo/detail`, { state: { comboId: combo.comboId, comboProducts: combo.comboProducts } });
+    navigate(`/combo/detail`, {
+      state: {
+        comboId: combo.comboId,
+        comboProducts: combo.comboProducts,
+        comboName: combo.comboName,
+        priceCombo: combo.price,
+      },
+    });
   };
 
   return (
-    <Grid container spacing={2} sx={{ marginTop: 4 }}>
+    <Grid container spacing={2}>
       {comboData.map((combo) => {
         const firstProductImage = combo.comboProducts[0]?.products[0]?.productImages[0]?.imageUrl;
         return (
-          <Grid item xs={12} md={4} key={combo.comboId}>
+          <Grid item xs={12} sm={6} md={4} key={combo.comboId}>
             <ComboCard
               title={combo.comboName}
               description={combo.description}
-              calories={`${combo.calories ?? 'N/A'} kcal`}
               image={firstProductImage}
               onClick={() => handleComboClick(combo)}
             />
@@ -107,8 +81,25 @@ const MainContent = ({ bmiStatus }) => {
   );
 };
 
-MainContent.propTypes = {
+ComboSuggestions.propTypes = {
   bmiStatus: PropTypes.string,
+};
+
+const ListCombo = ({ advice, bmiCategory }) => (
+  <Container>
+    <Grid container spacing={4} alignItems="center" mt={3} pl={2}>
+      <Grid item xs={12} md={4}>
+        <AdvicePaper advice={advice} bmiCategory={bmiCategory} />
+      </Grid>
+      <Grid item xs={12} md={8}>
+        <ComboSuggestions bmiStatus={advice.status} />
+      </Grid>
+    </Grid>
+  </Container>
+);
+ListCombo.propTypes = {
+  advice: PropTypes.object,
+  bmiCategory: PropTypes.string,
 };
 
 export default ListCombo;

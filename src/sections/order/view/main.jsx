@@ -11,7 +11,7 @@ import OrderList from '../order-list';
 
 export default function OrderView() {
   const location = useLocation();
-  const { userId, name, phoneNumber, email, shippingAddress, items } = location.state || {};
+  const { userId, name, phoneNumber, email, shippingAddress, items, comboId, priceCombo } = location.state || {};
   const [dataDetail, setDataDetail] = useState(null);
 
   const fetchData = async () => {
@@ -39,6 +39,8 @@ export default function OrderView() {
         shippingAddress={shippingAddress}
         dataDetail={dataDetail}
         items={items}
+        comboId={comboId}
+        priceCombo={priceCombo}
       />
     </Grid>
   );
