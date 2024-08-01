@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 
 import { Box, Grid, Button, CardMedia, Container, Typography } from '@mui/material';
@@ -62,6 +63,7 @@ const ReviewAndImage = () => (
 
 const MainContent = ({ bmiStatus }) => {
   const [comboData, setComboData] = useState([]);
+  const navigate = useNavigate();
 
   const fetchComboData = async () => {
     try {
@@ -81,18 +83,26 @@ const MainContent = ({ bmiStatus }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleComboClick = (combo) => {
+    navigate(`/combo/detail`, { state: { comboId: combo.comboId, comboProducts: combo.comboProducts } });
+  };
+
   return (
     <Grid container spacing={2} sx={{ marginTop: 4 }}>
-      {comboData.map((combo) => (
-        <Grid item xs={12} md={4} key={combo.comboId}>
-          <ComboCard
-            title={combo.comboName}
-            description={combo.description}
-            calories={`${combo.calories ?? 'N/A'} kcal`}
-            image="/path-to-your-image"
-          />
-        </Grid>
-      ))}
+      {comboData.map((combo) => {
+        const firstProductImage = combo.comboProducts[0]?.products[0]?.productImages[0]?.imageUrl;
+        return (
+          <Grid item xs={12} md={4} key={combo.comboId}>
+            <ComboCard
+              title={combo.comboName}
+              description={combo.description}
+              calories={`${combo.calories ?? 'N/A'} kcal`}
+              image={firstProductImage}
+              onClick={() => handleComboClick(combo)}
+            />
+          </Grid>
+        );
+      })}
     </Grid>
   );
 };

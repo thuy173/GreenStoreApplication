@@ -19,6 +19,7 @@ export const DetailBlogPage = lazy(() => import('../pages/BlogPage/detail'));
 export const CreateBlogPage = lazy(() => import('../pages/BlogPage/create'));
 export const UpdateBlogPage = lazy(() => import('../pages/BlogPage/update'));
 export const ComboPage = lazy(() => import('../pages/ComboPage/main'));
+export const ComboDetailPage = lazy(() => import('../pages/ComboPage/detail'));
 
 // ----------------------------------------------------------------------
 
@@ -46,6 +47,7 @@ export default function Router() {
         { path: 'blog/create', element: <CreateBlogPage /> },
         { path: 'blog/update/:id', element: <UpdateBlogPage /> },
         { path: 'combo', element: <ComboPage /> },
+        { path: 'combo/detail', element: <ComboDetailPage /> },
       ],
     },
     {

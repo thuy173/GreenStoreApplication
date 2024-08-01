@@ -2,48 +2,11 @@ import React from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { useLocation } from 'react-router-dom';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { styled } from '@mui/system';
 import { Card, Button, Container, CardMedia, Typography, CardContent } from '@mui/material';
-
-const products = [
-  {
-    id: 1,
-    name: 'Delicious Recipes and Diet Workout',
-    description: "Anna Marta's core philosophy...",
-    price: '14,69$',
-    image: '/path/to/image1.jpg',
-  },
-  {
-    id: 2,
-    name: 'Pesto',
-    description: 'Pesto: beloved for its rich flavor...',
-    price: '28,50$',
-    image: '/path/to/image2.jpg',
-  },
-  {
-    id: 3,
-    name: 'Salsa',
-    description: 'Salsa: a vibrant medley of tomatoes...',
-    price: '14,49$',
-    image: '/path/to/image3.jpg',
-  },
-  {
-    id: 4,
-    name: 'Oyster',
-    description: 'Oysters, prized delicacies of the sea...',
-    price: 'Out of stock',
-    image: '/path/to/image4.jpg',
-  },
-  {
-    id: 5,
-    name: 'Tartar',
-    description: 'Tartar sauce, a tangy companion...',
-    price: '12,49$',
-    image: '/path/to/image5.jpg',
-  },
-];
 
 const CircularContainer = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -83,6 +46,9 @@ const CircularCard = styled(Card)(({ theme }) => ({
 }));
 
 const ComboDetail = () => {
+  const location = useLocation();
+  const { comboId, comboProducts } = location.state || { comboId: null, comboProducts: [] };
+
   const settings = {
     infinite: true,
     speed: 500,
@@ -105,34 +71,36 @@ const ComboDetail = () => {
   return (
     <Container maxWidth="lg" sx={{ textAlign: 'center', py: 5 }}>
       <Typography variant="h2" component="h1" gutterBottom>
-        Delicious Recipes and Diet Workout
+        Combo Detail for Combo ID: {comboId}
       </Typography>
       <Typography variant="h6" component="p" gutterBottom>
-        Anna philosophy emphasizes colorful, beautiful, and delicious food.
+        Here are the products included in this combo:
       </Typography>
-      <Button variant="contained" color="primary" sx={{ mt: 3 }}>
-        Explore Products
-      </Button>
       <CircularContainer>
         <Slider {...settings}>
-          {products.map((product) => (
-            <CircularCard key={product.id}>
-              <CardMedia component="img" image={product.image} alt={product.name} />
-              <CardContent>
-                <Typography variant="h5" component="h2">
-                  {product.name}
-                </Typography>
-                <Typography variant="body2" component="p">
-                  {product.description}
-                </Typography>
-                <Typography variant="h6" component="p" sx={{ mt: 2 }}>
-                  {product.price}
-                </Typography>
-              </CardContent>
-            </CircularCard>
+          {comboProducts.map((comboProduct, index) => (
+            comboProduct.products.map((product) => (
+              <CircularCard key={product.productId}>
+                <CardMedia component="img" image={product.productImages[0]?.imageUrl} alt={product.productName} />
+                <CardContent>
+                  <Typography variant="h5" component="h2">
+                    {product.productName}
+                  </Typography>
+                  <Typography variant="body2" component="p">
+                    {product.description}
+                  </Typography>
+                  <Typography variant="h6" component="p" sx={{ mt: 2 }}>
+                    {product.price} {product.unitOfMeasure}
+                  </Typography>
+                </CardContent>
+              </CircularCard>
+            ))
           ))}
         </Slider>
       </CircularContainer>
+      <Button variant="contained" color="primary" sx={{ mt: 3 }}>
+        Buy now
+      </Button>
     </Container>
   );
 };
