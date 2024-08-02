@@ -16,7 +16,7 @@ import CategoryHome from '../category';
 const AnimatedSection = ({ children }) => {
   const { ref, inView } = useInView({
     triggerOnce: true,
-    threshold: 0.2,
+    threshold: 0.4,
   });
 
   return (

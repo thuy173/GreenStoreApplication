@@ -191,7 +191,15 @@ const PurchaseOrder = () => {
                     />
                     <Box>
                       <Typography variant="h6">{order.orderItems[0].productName}</Typography>
-                      <Typography color="textSecondary">
+                      <Typography
+                        color="textSecondary"
+                        sx={{
+                          display: '-webkit-box',
+                          WebkitBoxOrient: 'vertical',
+                          WebkitLineClamp: 2,
+                          overflow: 'hidden',
+                        }}
+                      >
                         {order.orderItems[0].description}
                       </Typography>
                       <Typography>x{order.orderItems[0].quantity}</Typography>

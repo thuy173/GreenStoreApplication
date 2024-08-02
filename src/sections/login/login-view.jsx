@@ -258,7 +258,7 @@ const LoginView = () => {
             gap: 2.5,
             display: 'flex',
             flexDirection: 'column',
-            alignSelf: 'flex-end',
+            alignSelf: 'center',
             marginRight: 18,
           }}
         >

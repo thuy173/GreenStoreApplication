@@ -239,7 +239,17 @@ export default function CartDetail() {
                 />
                 <Grid item xs ml={2}>
                   <Typography variant="body1">{item.productName}</Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      display: '-webkit-box',
+                      WebkitBoxOrient: 'vertical',
+                      WebkitLineClamp: 2,
+                      overflow: 'hidden',
+                    }}
+                    mr={1}
+                  >
                     {item.description}
                   </Typography>
                 </Grid>
