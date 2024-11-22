@@ -18,7 +18,6 @@ Make sure you have the following installed on your system:
 
 ## Features
 - Product, profile, Cart, checkout, payment with stripe, product reviews, rating...
-- Management product, voucher, order status, customer, blog, plan...
 
 ## Getting Started
 
@@ -50,9 +49,6 @@ The app will be available at http://localhost:3038
 
 ![Screenshot 2024-11-04 172125](https://github.com/user-attachments/assets/c8aedfad-447e-4ad2-ae62-553202e6f218)
 
-![Screenshot 2024-11-04 173021](https://github.com/user-attachments/assets/094a2168-cf1f-467b-9a4a-cc9b23d6077f)
-![Screenshot 2024-11-04 173240](https://github.com/user-attachments/assets/8b54cfea-7d30-42d8-90d7-625f3bc9425c)
-![Screenshot 2024-11-04 173425](https://github.com/user-attachments/assets/bd64c9f0-60b4-4b71-82dd-33e0290d1c80)
-![Screenshot 2024-11-04 173046](https://github.com/user-attachments/assets/738381c1-2c28-4c0e-b895-794b8da16b55)
+
 
 
